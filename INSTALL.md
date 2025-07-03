@@ -87,7 +87,7 @@ After setup, test that everything works:
 1. **Open Claude Desktop**
 2. **Ask Claude:** *"What MCP tools do you have available?"*
 3. **You should see StreamerSongList tools listed**
-4. **Test a tool:** *"Use the getStreamerByName tool to get information about 'shroud'"*
+4. **Test a tool:** *"Use the getStreamerByName tool to get information about 'belleune'"*
 
 ## Troubleshooting
 
@@ -196,7 +196,7 @@ You can run multiple MCP servers:
 
 Once installed, try these commands with Claude:
 
-- *"Get information about streamer 'ninja' using StreamerSongList tools"*
-- *"Show me the current song queue for 'pokimane'"*
+- *"Get information about streamer 'belleune' using StreamerSongList tools"*
+- *"Show me the current song queue for 'belleune'"*
 - *"Get queue statistics for a popular streamer"*
-- *"Help me create a song request for 'shroud'"*
+- *"Help me create a song request for 'belleune'"*
