@@ -4,16 +4,74 @@
 const { fetch } = require('undici');
 globalThis.fetch = fetch;
 
-// Import MCP SDK modules - using CommonJS compatible paths
-const { Server } = require('@modelcontextprotocol/sdk/dist/cjs/server');
-const { StdioServerTransport } = require('@modelcontextprotocol/sdk/dist/cjs/server/stdio');
-const { CallToolRequestSchema, ListToolsRequestSchema } = require('@modelcontextprotocol/sdk/dist/cjs/types');
+// Import required modules
+const path = require('path');
+const fs = require('fs');
+
+// Function to find the MCP SDK
+function findMcpSdk() {
+  try {
+    // First try direct import
+    return require('@modelcontextprotocol/sdk');
+  } catch (e) {
+    // Look for the SDK in various locations
+    const possiblePaths = [
+      // Local node_modules
+      path.join(process.cwd(), 'node_modules/@modelcontextprotocol/sdk'),
+      // Parent node_modules (when installed as dependency)
+      path.join(process.cwd(), '../node_modules/@modelcontextprotocol/sdk'),
+      // Global node_modules
+      path.join(process.execPath, '../lib/node_modules/@modelcontextprotocol/sdk')
+    ];
+    
+    for (const basePath of possiblePaths) {
+      try {
+        if (fs.existsSync(path.join(basePath, 'package.json'))) {
+          // Found the SDK, now try to load the components
+          const serverPath = path.join(basePath, 'dist/cjs/server/index.js');
+          const stdioPath = path.join(basePath, 'dist/cjs/server/stdio.js');
+          const typesPath = path.join(basePath, 'dist/cjs/types.js');
+          
+          if (fs.existsSync(serverPath) && fs.existsSync(stdioPath) && fs.existsSync(typesPath)) {
+            return {
+              Server: require(serverPath).Server,
+              StdioServerTransport: require(stdioPath).StdioServerTransport,
+              CallToolRequestSchema: require(typesPath).CallToolRequestSchema,
+              ListToolsRequestSchema: require(typesPath).ListToolsRequestSchema
+            };
+          }
+        }
+      } catch (err) {
+        // Continue to next path
+      }
+    }
+    
+    // If we get here, we couldn't find the SDK
+    throw new Error('Could not locate @modelcontextprotocol/sdk in any node_modules directory');
+  }
+}
+
+// Try to load the MCP SDK
+try {
+  const sdk = findMcpSdk();
+  
+  // Make components available globally
+  global.Server = sdk.Server;
+  global.StdioServerTransport = sdk.StdioServerTransport;
+  global.CallToolRequestSchema = sdk.CallToolRequestSchema;
+  global.ListToolsRequestSchema = sdk.ListToolsRequestSchema;
+} catch (error) {
+  console.error("Error loading MCP SDK:", error.message);
+  console.error("Please install the MCP SDK with: npm install @modelcontextprotocol/sdk@1.13.3");
+  console.error("If the error persists, try installing the package globally: npm install -g @modelcontextprotocol/sdk@1.13.3");
+  process.exit(1);
+}
 
 // Create the server
-const server = new Server(
+const server = new global.Server(
   {
     name: "streamersonglist-mcp",
-    version: "1.0.0",
+    version: "1.0.5",
   },
   {
     capabilities: {
@@ -434,7 +492,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
 // Start the server
 async function main() {
-  const transport = new StdioServerTransport();
+  const transport = new global.StdioServerTransport();
   await server.connect(transport);
   console.error("StreamerSongList MCP Server running on stdio");
 }
