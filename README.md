@@ -117,7 +117,7 @@ Fetch detailed information about a specific streamer.
 
 **Example:**
 ```
-Use getStreamerByName with streamerName "shroud"
+Use getStreamerByName with streamerName "belleune"
 ```
 
 ### getQueue
@@ -131,7 +131,7 @@ View current song queues with pagination support.
 
 **Example:**
 ```
-Use getQueue with streamerName "pokimane" and limit 10
+Use getQueue with streamerName "belleune" and limit 10
 ```
 
 ### getQueueStats
@@ -143,7 +143,7 @@ Get comprehensive stats about song queues.
 
 **Example:**
 ```
-Use getQueueStats with streamerName "ninja"
+Use getQueueStats with streamerName "belleune"
 ```
 
 ### manageSongRequest
@@ -163,7 +163,7 @@ Create, update, and delete song requests.
 ```
 Use manageSongRequest to create a new request:
 - action: "create"
-- streamerName: "shroud"
+- streamerName: "belleune"
 - songTitle: "Bohemian Rhapsody"
 - artist: "Queen"
 - requesterName: "ChatUser123"
@@ -180,7 +180,7 @@ Monitor queue changes with configurable polling intervals.
 
 **Example:**
 ```
-Use monitorQueue with streamerName "pokimane", interval 60, duration 600
+Use monitorQueue with streamerName "belleune", interval 60, duration 600
 ```
 
 ## Development
