@@ -1,3 +1,5 @@
+[![smithery badge](https://smithery.ai/badge/@vuvuvu/streamersonglist-mcp)](https://smithery.ai/server/@vuvuvu/streamersonglist-mcp)
+
 # StreamerSongList MCP Server
 
 [![Test MCP Server](https://github.com/vuvuvu/streamersonglist-mcp/actions/workflows/test.yml/badge.svg)](https://github.com/vuvuvu/streamersonglist-mcp/actions/workflows/test.yml)
@@ -10,11 +12,22 @@ A Model Context Protocol (MCP) server that provides tools for interacting with S
 
 ### 🎵 Available Tools
 
+#### Core Queue Management
 - **getStreamerByName**: Fetch detailed information about a specific streamer
 - **getQueue**: View current song queues with pagination support  
 - **getQueueStats**: Get comprehensive stats about song queues including total songs, duration, and popular tracks
 - **manageSongRequest**: Create, update, and delete song requests
 - **monitorQueue**: Monitor queue changes with configurable polling intervals
+
+#### Play History & Song Database
+- **getPlayHistory**: Retrieve play history with filtering and pagination
+- **searchSongs**: Search the song database with various filters
+- **getSongDetails**: Get detailed information about specific songs
+- **manageSongAttributes**: Add, update, or remove song attributes like tags and ratings
+
+#### Overlay & Analytics
+- **getOverlayData**: Fetch real-time overlay data for streaming software
+- **getStreamStats**: Get comprehensive streaming statistics and analytics
 
 ### 🔧 Technical Features
 
@@ -183,6 +196,93 @@ Monitor queue changes with configurable polling intervals.
 Use monitorQueue with streamerName "belleune", interval 60, duration 600
 ```
 
+### getPlayHistory
+
+Retrieve play history with filtering and pagination support.
+
+**Parameters:**
+- `streamerName` (string, required): The name of the streamer whose play history to fetch
+- `limit` (number, optional): Maximum number of entries to return (default: 50)
+- `offset` (number, optional): Number of entries to skip for pagination (default: 0)
+- `startDate` (string, optional): Start date filter (ISO format)
+- `endDate` (string, optional): End date filter (ISO format)
+
+**Example:**
+```
+Use getPlayHistory with streamerName "belleune", limit 20, startDate "2024-01-01"
+```
+
+### searchSongs
+
+Search the song database with various filters.
+
+**Parameters:**
+- `query` (string, optional): Search query for song title or artist
+- `artist` (string, optional): Filter by specific artist
+- `genre` (string, optional): Filter by music genre
+- `limit` (number, optional): Maximum number of results (default: 50)
+- `offset` (number, optional): Number of results to skip (default: 0)
+
+**Example:**
+```
+Use searchSongs with query "bohemian", artist "Queen", limit 10
+```
+
+### getSongDetails
+
+Get detailed information about specific songs.
+
+**Parameters:**
+- `songId` (string, required): The unique identifier of the song
+
+**Example:**
+```
+Use getSongDetails with songId "song_12345"
+```
+
+### getOverlayData
+
+Fetch real-time overlay data for streaming software.
+
+**Parameters:**
+- `streamerName` (string, required): The name of the streamer
+- `overlayType` (string, optional): Type of overlay data ("current", "queue", "stats")
+
+**Example:**
+```
+Use getOverlayData with streamerName "belleune", overlayType "current"
+```
+
+### getStreamStats
+
+Get comprehensive streaming statistics and analytics.
+
+**Parameters:**
+- `streamerName` (string, required): The name of the streamer
+- `period` (string, optional): Time period for stats ("day", "week", "month", "year")
+- `startDate` (string, optional): Start date for custom period (ISO format)
+- `endDate` (string, optional): End date for custom period (ISO format)
+
+**Example:**
+```
+Use getStreamStats with streamerName "belleune", period "week"
+```
+
+### manageSongAttributes
+
+Add, update, or remove song attributes like tags and ratings.
+
+**Parameters:**
+- `action` (string, required): The action to perform ("add", "update", "remove")
+- `songId` (string, required): The unique identifier of the song
+- `attributeType` (string, required): Type of attribute ("tag", "rating", "note")
+- `value` (string, optional): The attribute value (required for add/update)
+
+**Example:**
+```
+Use manageSongAttributes with action "add", songId "song_12345", attributeType "tag", value "rock"
+```
+
 ## Development
 
 ### Project Structure
@@ -227,12 +327,25 @@ The server will start and wait for MCP protocol messages on stdin. You can send 
 
 The server interacts with these StreamerSongList API endpoints:
 
+### Core Queue Management
 - `GET /v1/streamers/{streamerName}` - Get streamer information
 - `GET /v1/streamers/{streamerName}/queue` - Get song queue
 - `GET /v1/streamers/{streamerName}/queue/stats` - Get queue statistics
 - `POST /v1/streamers/{streamerName}/requests` - Create song request
 - `PUT /v1/streamers/{streamerName}/requests/{requestId}` - Update song request
 - `DELETE /v1/streamers/{streamerName}/requests/{requestId}` - Delete song request
+
+### Play History & Song Database
+- `GET /v1/streamers/{streamerName}/history` - Get play history
+- `GET /v1/songs/search` - Search song database
+- `GET /v1/songs/{songId}` - Get song details
+- `POST /v1/songs/{songId}/attributes` - Add song attributes
+- `PUT /v1/songs/{songId}/attributes/{attributeId}` - Update song attributes
+- `DELETE /v1/songs/{songId}/attributes/{attributeId}` - Remove song attributes
+
+### Overlay & Analytics
+- `GET /v1/streamers/{streamerName}/overlay` - Get overlay data
+- `GET /v1/streamers/{streamerName}/stats` - Get stream statistics
 
 ## Troubleshooting
 
@@ -274,9 +387,21 @@ MIT License - see LICENSE file for details.
 
 ## Changelog
 
+### v1.1.0
+- **NEW**: Added 6 additional StreamerSongList API endpoints
+- **NEW**: Play history retrieval with filtering (`getPlayHistory`)
+- **NEW**: Song database search functionality (`searchSongs`)
+- **NEW**: Detailed song information access (`getSongDetails`)
+- **NEW**: Real-time overlay data for streaming software (`getOverlayData`)
+- **NEW**: Comprehensive streaming analytics (`getStreamStats`)
+- **NEW**: Song attribute management system (`manageSongAttributes`)
+- Enhanced API coverage from 5 to 11 total tools
+- Improved documentation with categorized tool sections
+- Extended API endpoint coverage for comprehensive StreamerSongList integration
+
 ### v1.0.0
 - Initial release
-- All 5 StreamerSongList tools implemented
+- Core 5 StreamerSongList tools implemented
 - MCP protocol compliance
 - Claude Desktop integration
 - Comprehensive error handling
