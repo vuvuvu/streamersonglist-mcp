@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "streamersonglist": {
+      "command": "node",
+      "args": ["src/server.js"],
+      "cwd": "/path/to/streamersonglist-mcp"
+    }
+  }
+}
