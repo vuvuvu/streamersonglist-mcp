@@ -4,11 +4,10 @@
 const { fetch } = require('undici');
 globalThis.fetch = fetch;
 
-// Import MCP SDK modules
-const mcp = require('@modelcontextprotocol/sdk');
-const { Server } = mcp;
-const { StdioServerTransport } = mcp;
-const { CallToolRequestSchema, ListToolsRequestSchema } = mcp;
+// Import MCP SDK modules - using CommonJS compatible paths
+const { Server } = require('@modelcontextprotocol/sdk/dist/cjs/server');
+const { StdioServerTransport } = require('@modelcontextprotocol/sdk/dist/cjs/server/stdio');
+const { CallToolRequestSchema, ListToolsRequestSchema } = require('@modelcontextprotocol/sdk/dist/cjs/types');
 
 // Create the server
 const server = new Server(
