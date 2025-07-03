@@ -73,11 +73,9 @@ function setupClaudeDesktop() {
   }
 
   // Add StreamerSongList server
-  const currentDir = process.cwd();
   config.mcpServers.streamersonglist = {
-    command: "node",
-    args: ["src/server.js"],
-    cwd: currentDir
+    command: "npx",
+    args: ["streamersonglist-mcp"]
   };
 
   // Write updated config
@@ -86,8 +84,8 @@ function setupClaudeDesktop() {
     console.log('✅ Successfully added StreamerSongList MCP server to Claude Desktop!');
     console.log('\n📋 Configuration added:');
     console.log('   Server name: streamersonglist');
-    console.log('   Working directory:', currentDir);
-    console.log('   Command: node src/server.js');
+    console.log('   Command: npx streamersonglist-mcp');
+    console.log('   Note: This will automatically download and run the latest version');
     
     console.log('\n🔄 Next steps:');
     console.log('1. Restart Claude Desktop completely');
