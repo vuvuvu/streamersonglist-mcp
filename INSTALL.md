@@ -13,7 +13,7 @@ This guide will help you install and set up the StreamerSongList MCP Server with
 
 1. **Clone and install:**
    ```bash
-   git clone https://github.com/yourusername/streamersonglist-mcp.git
+   git clone https://github.com/vuvuvu/streamersonglist-mcp.git
    cd streamersonglist-mcp
    npm install
    ```
@@ -34,7 +34,7 @@ This guide will help you install and set up the StreamerSongList MCP Server with
 
 1. **Clone and install:**
    ```bash
-   git clone https://github.com/yourusername/streamersonglist-mcp.git
+   git clone https://github.com/vuvuvu/streamersonglist-mcp.git
    cd streamersonglist-mcp
    npm install
    ```

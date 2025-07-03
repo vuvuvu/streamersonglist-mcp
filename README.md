@@ -30,7 +30,7 @@ A Model Context Protocol (MCP) server that provides tools for interacting with S
 
 1. **Clone this repository:**
    ```bash
-   git clone https://github.com/yourusername/streamersonglist-mcp.git
+   git clone https://github.com/vuvuvu/streamersonglist-mcp.git
    cd streamersonglist-mcp
    ```
 

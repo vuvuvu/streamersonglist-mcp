@@ -32,10 +32,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/streamersonglist-mcp.git"
+    "url": "https://github.com/vuvuvu/streamersonglist-mcp.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/streamersonglist-mcp/issues"
+    "url": "https://github.com/vuvuvu/streamersonglist-mcp/issues"
   },
-  "homepage": "https://github.com/yourusername/streamersonglist-mcp#readme"
+  "homepage": "https://github.com/vuvuvu/streamersonglist-mcp#readme"
 }
