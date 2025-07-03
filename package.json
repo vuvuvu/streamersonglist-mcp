@@ -1,6 +1,6 @@
 {
   "name": "streamersonglist-mcp",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A Model Context Protocol (MCP) server for interacting with StreamerSongList APIs",
   "main": "src/server.js",
   "bin": {
@@ -31,8 +31,8 @@
   "author": "vuvuvu",
   "license": "MIT",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.13.1",
-    "undici": "^6.0.0"
+    "@modelcontextprotocol/sdk": "^1.13.3",
+    "undici": "^7.11.0"
   },
   "engines": {
     "node": ">=18.0.0"

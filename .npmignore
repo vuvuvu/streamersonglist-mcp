@@ -1,0 +1,21 @@
+# Test files (not needed in published package)
+test-server.js
+setup-claude.js
+
+# Development files
+.github/
+*.tgz
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
