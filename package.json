@@ -1,6 +1,6 @@
 {
   "name": "streamersonglist-mcp",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A Model Context Protocol (MCP) server for interacting with StreamerSongList APIs",
   "main": "src/server.js",
   "bin": {
@@ -32,6 +32,7 @@
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.13.3",
+    "streamersonglist-mcp": "^1.0.3",
     "undici": "^7.11.0"
   },
   "engines": {
