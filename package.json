@@ -1,0 +1,41 @@
+{
+  "name": "streamersonglist-mcp",
+  "version": "1.0.0",
+  "description": "A Model Context Protocol (MCP) server for interacting with StreamerSongList APIs",
+  "main": "src/server.js",
+  "bin": {
+    "streamersonglist-mcp": "src/server.js"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node test-server.js",
+    "setup": "node setup-claude.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "streaming",
+    "music",
+    "songlist",
+    "twitch",
+    "ai",
+    "claude"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.13.1",
+    "undici": "^6.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/streamersonglist-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/streamersonglist-mcp/issues"
+  },
+  "homepage": "https://github.com/yourusername/streamersonglist-mcp#readme"
+}
