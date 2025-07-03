@@ -1,6 +1,6 @@
 {
   "name": "streamersonglist-mcp",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A Model Context Protocol (MCP) server for interacting with StreamerSongList APIs",
   "main": "src/server.js",
   "bin": {
