@@ -32,6 +32,23 @@ A Model Context Protocol (MCP) server that provides tools for interacting with S
 
 ### Installation
 
+#### Option 1: Using npx (Recommended)
+
+No installation required! Just configure Claude Desktop to use:
+
+```json
+{
+  "mcpServers": {
+    "streamersonglist": {
+      "command": "npx",
+      "args": ["streamersonglist-mcp"]
+    }
+  }
+}
+```
+
+#### Option 2: Local Installation
+
 1. **Clone this repository:**
    ```bash
    git clone https://github.com/vuvuvu/streamersonglist-mcp.git
@@ -50,6 +67,8 @@ A Model Context Protocol (MCP) server that provides tools for interacting with S
 
 ### Usage with Claude Desktop
 
+#### Quick Setup (npx method)
+
 1. **Find your Claude Desktop config file:**
    - **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
    - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
@@ -59,9 +78,8 @@ A Model Context Protocol (MCP) server that provides tools for interacting with S
    {
      "mcpServers": {
        "streamersonglist": {
-         "command": "node",
-         "args": ["src/server.js"],
-         "cwd": "/path/to/streamersonglist-mcp"
+         "command": "npx",
+         "args": ["streamersonglist-mcp"]
        }
      }
    }
@@ -71,6 +89,22 @@ A Model Context Protocol (MCP) server that provides tools for interacting with S
 
 4. **Test it out:**
    Ask Claude: *"Use the getStreamerByName tool to get information about a popular streamer"*
+
+#### Alternative: Local Installation Method
+
+If you prefer to run from a local clone:
+
+```json
+{
+  "mcpServers": {
+    "streamersonglist": {
+      "command": "node",
+      "args": ["src/server.js"],
+      "cwd": "/path/to/streamersonglist-mcp"
+    }
+  }
+}
+```
 
 ## Tool Documentation
 

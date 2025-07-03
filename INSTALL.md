@@ -9,7 +9,24 @@ This guide will help you install and set up the StreamerSongList MCP Server with
 
 ## Quick Installation
 
-### Option 1: Automatic Setup (Recommended)
+### Option 1: Using npx (Simplest)
+
+No installation required! Just add this to your Claude Desktop config:
+
+```json
+{
+  "mcpServers": {
+    "streamersonglist": {
+      "command": "npx",
+      "args": ["streamersonglist-mcp"]
+    }
+  }
+}
+```
+
+Then restart Claude Desktop and you're ready to go!
+
+### Option 2: Automatic Local Setup
 
 1. **Clone and install:**
    ```bash
