@@ -4,13 +4,12 @@
 const { fetch } = require('undici');
 globalThis.fetch = fetch;
 
-const path = require('path');
-const { Server } = require(path.join(__dirname, '../node_modules/@modelcontextprotocol/sdk/dist/cjs/server/index'));
-const { StdioServerTransport } = require(path.join(__dirname, '../node_modules/@modelcontextprotocol/sdk/dist/cjs/server/stdio'));
+const { Server } = require('@modelcontextprotocol/sdk/dist/cjs/server/index');
+const { StdioServerTransport } = require('@modelcontextprotocol/sdk/dist/cjs/server/stdio');
 const {
   CallToolRequestSchema,
   ListToolsRequestSchema,
-} = require(path.join(__dirname, '../node_modules/@modelcontextprotocol/sdk/dist/cjs/types'));
+} = require('@modelcontextprotocol/sdk/dist/cjs/types');
 
 // Create the server
 const server = new Server(
