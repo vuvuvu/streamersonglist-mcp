@@ -5,6 +5,7 @@
 [![Test MCP Server](https://github.com/vuvuvu/streamersonglist-mcp/actions/workflows/test.yml/badge.svg)](https://github.com/vuvuvu/streamersonglist-mcp/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
+[![smithery badge](https://smithery.ai/badge/@vuvuvu/streamersonglist-mcp)](https://smithery.ai/server/@vuvuvu/streamersonglist-mcp)
 
 A Model Context Protocol (MCP) server that provides tools for interacting with StreamerSongList APIs. This server enables AI assistants like Claude to manage song requests, monitor queues, and interact with streaming platforms' song request systems.
 
@@ -77,6 +78,14 @@ No installation required! Just configure Claude Desktop to use:
    ```bash
    npm test
    ```
+
+### Installing via Smithery
+
+To install streamersonglist-mcp for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@vuvuvu/streamersonglist-mcp):
+
+```bash
+npx -y @smithery/cli install @vuvuvu/streamersonglist-mcp --client claude
+```
 
 ### Usage with Claude Desktop
 
