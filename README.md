@@ -1,4 +1,3 @@
-[![smithery badge](https://smithery.ai/badge/@vuvuvu/streamersonglist-mcp)](https://smithery.ai/server/@vuvuvu/streamersonglist-mcp)
 
 # StreamerSongList MCP Server
 
@@ -11,7 +10,7 @@ A Model Context Protocol (MCP) server that provides tools for interacting with S
 
 ## Features
 
-### 🎵 Available Tools
+### 🎵 11 Available Tools
 
 #### Core Queue Management
 - **getStreamerByName**: Fetch detailed information about a specific streamer
@@ -36,6 +35,9 @@ A Model Context Protocol (MCP) server that provides tools for interacting with S
 - **Type Safety**: Built with comprehensive input validation
 - **Error Handling**: Robust error handling and user-friendly error messages
 - **No Authentication Required**: Simplified setup without auth complexity
+      -Update- Since i've added the other api endpoints, those will require authentication,
+               (I haven't a use for them so I leave it upto you to figure out)
+               otherwise expect a 404 responses
 
 ## Quick Start
 
