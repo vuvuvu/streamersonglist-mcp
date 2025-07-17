@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/vuvuvu-streamersonglist-mcp-badge.png)](https://mseep.ai/app/vuvuvu-streamersonglist-mcp)
+
 
 # StreamerSongList MCP Server
 
