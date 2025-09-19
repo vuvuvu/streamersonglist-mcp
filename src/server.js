@@ -68,6 +68,8 @@ try {
 }
 
 // Create the server
+let defaultStreamer = process.env.DEFAULT_STREAMER || null;
+
 const server = new global.Server(
   {
     name: "streamersonglist-mcp",
@@ -93,7 +95,7 @@ const tools = [
           description: "The name of the streamer",
         },
       },
-      required: ["streamerName"],
+      required: [],
     },
   },
   {
@@ -117,7 +119,7 @@ const tools = [
           default: 0,
         },
       },
-      required: ["streamerName"],
+      required: [],
     },
   },
   {
@@ -131,7 +133,7 @@ const tools = [
           description: "The name of the streamer whose queue stats to fetch",
         },
       },
-      required: ["streamerName"],
+      required: [],
     },
   },
   {
@@ -155,7 +157,7 @@ const tools = [
           default: 300,
         },
       },
-      required: ["streamerName"],
+      required: [],
     },
   },
 ];
@@ -174,10 +176,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   try {
     switch (name) {
       case "getStreamerByName": {
-        const { streamerName } = args;
-        
+        const { streamerName = defaultStreamer } = args;
+
         if (!streamerName) {
-          throw new Error("streamerName is required");
+          throw new Error(
+            "streamerName is required. Provide a streamerName or set the DEFAULT_STREAMER environment variable."
+          );
         }
         
         try {
@@ -210,10 +214,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case "getQueue": {
-        const { streamerName, limit = 50, offset = 0 } = args;
-        
+        const { streamerName = defaultStreamer, limit = 50, offset = 0 } = args;
+
         if (!streamerName) {
-          throw new Error("streamerName is required");
+          throw new Error(
+            "streamerName is required. Provide a streamerName or set the DEFAULT_STREAMER environment variable."
+          );
         }
         
         try {
@@ -246,10 +252,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case "getQueueStats": {
-        const { streamerName } = args;
-        
+        const { streamerName = defaultStreamer } = args;
+
         if (!streamerName) {
-          throw new Error("streamerName is required");
+          throw new Error(
+            "streamerName is required. Provide a streamerName or set the DEFAULT_STREAMER environment variable."
+          );
         }
         
         try {
@@ -292,10 +300,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
 
       case "monitorQueue": {
-        const { streamerName, interval = 30, duration = 300 } = args;
+
+        const { streamerName = defaultStreamer, interval = 30, duration = 300 } = args;
 
         if (!streamerName) {
-          throw new Error("streamerName is required");
+          throw new Error(
+            "streamerName is required. Provide a streamerName or set the DEFAULT_STREAMER environment variable."
+          );
         }
         
         try {
