@@ -120,6 +120,34 @@ If you prefer to run from a local clone:
 }
 ```
 
+## Default Streamer Configuration
+
+Set the `DEFAULT_STREAMER` environment variable to automatically supply the `streamerName` argument for the `getStreamerByName`, `getQueue`, `getQueueStats`, and `monitorQueue` tools. These handlers fall back to the configured default when the argument is omitted, while still allowing you to override it by passing a `streamerName` explicitly. If neither the argument nor the environment variable is provided, the server will respond with an error.
+
+### Setting `DEFAULT_STREAMER` in Claude Desktop
+
+Add an `env` block to your Claude Desktop configuration when registering the server:
+
+```json
+{
+  "mcpServers": {
+    "streamersonglist": {
+      "command": "npx",
+      "args": ["streamersonglist-mcp"],
+      "env": {
+        "DEFAULT_STREAMER": "belleune"
+      }
+    }
+  }
+}
+```
+
+You can also set the variable for one-off terminal sessions:
+
+```bash
+DEFAULT_STREAMER=belleune npx streamersonglist-mcp
+```
+
 ## Tool Documentation
 
 ### getStreamerByName
@@ -127,7 +155,7 @@ If you prefer to run from a local clone:
 Fetch detailed information about a specific streamer.
 
 **Parameters:**
-- `streamerName` (string, required): The name of the streamer
+- `streamerName` (string, optional): The name of the streamer. Defaults to the `DEFAULT_STREAMER` environment variable when set.
 
 **Example:**
 ```
@@ -139,7 +167,7 @@ Use getStreamerByName with streamerName "belleune"
 View current song queues with pagination support.
 
 **Parameters:**
-- `streamerName` (string, required): The name of the streamer whose queue to fetch
+- `streamerName` (string, optional): The name of the streamer whose queue to fetch. Defaults to the `DEFAULT_STREAMER` environment variable when set.
 - `limit` (number, optional): Maximum number of songs to return (default: 50)
 - `offset` (number, optional): Number of songs to skip for pagination (default: 0)
 
@@ -153,7 +181,7 @@ Use getQueue with streamerName "belleune" and limit 10
 Get comprehensive stats about song queues.
 
 **Parameters:**
-- `streamerName` (string, required): The name of the streamer whose queue stats to fetch
+- `streamerName` (string, optional): The name of the streamer whose queue stats to fetch. Defaults to the `DEFAULT_STREAMER` environment variable when set.
 
 **Example:**
 ```
@@ -165,7 +193,7 @@ Use getQueueStats with streamerName "belleune"
 Monitor queue changes with configurable polling intervals.
 
 **Parameters:**
-- `streamerName` (string, required): The name of the streamer whose queue to monitor
+- `streamerName` (string, optional): The name of the streamer whose queue to monitor. Defaults to the `DEFAULT_STREAMER` environment variable when set.
 - `interval` (number, optional): Polling interval in seconds (default: 30)
 - `duration` (number, optional): How long to monitor in seconds (default: 300)
 
