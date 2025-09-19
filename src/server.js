@@ -73,7 +73,7 @@ let defaultStreamer = process.env.DEFAULT_STREAMER || null;
 const server = new global.Server(
   {
     name: "streamersonglist-mcp",
-    version: "1.0.5",
+    version: "1.1.0",
   },
   {
     capabilities: {
