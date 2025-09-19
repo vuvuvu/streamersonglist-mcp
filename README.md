@@ -10,34 +10,24 @@ A Model Context Protocol (MCP) server that provides tools for interacting with S
 
 ## Features
 
-### 🎵 11 Available Tools
+### 🎵 4 Available Tools
 
-#### Core Queue Management
+#### Core Queue Insights
 - **getStreamerByName**: Fetch detailed information about a specific streamer
-- **getQueue**: View current song queues with pagination support  
+- **getQueue**: View current song queues with pagination support
 - **getQueueStats**: Get comprehensive stats about song queues including total songs, duration, and popular tracks
-- **manageSongRequest**: Create, update, and delete song requests
+
+#### Monitoring Utility
 - **monitorQueue**: Monitor queue changes with configurable polling intervals
-
-#### Play History & Song Database
-- **getPlayHistory**: Retrieve play history with filtering and pagination
-- **searchSongs**: Search the song database with various filters
-- **getSongDetails**: Get detailed information about specific songs
-- **manageSongAttributes**: Add, update, or remove song attributes like tags and ratings
-
-#### Overlay & Analytics
-- **getOverlayData**: Fetch real-time overlay data for streaming software
-- **getStreamStats**: Get comprehensive streaming statistics and analytics
 
 ### 🔧 Technical Features
 
 - **MCP Protocol Compliant**: Works with Claude Desktop, OpenAI agents, and other MCP clients
 - **Type Safety**: Built with comprehensive input validation
 - **Error Handling**: Robust error handling and user-friendly error messages
-- **No Authentication Required**: Simplified setup without auth complexity
-      -Update- Since i've added the other api endpoints, those will require authentication,
-               (I haven't a use for them so I leave it upto you to figure out)
-               otherwise expect a 404 responses
+- **No Authentication Required**: Only public, read-only StreamerSongList endpoints are exposed—no API token needed
+
+> ℹ️  Tools that require StreamerSongList authentication have been intentionally removed to keep this MCP server simple and safe by default.
 
 ## Quick Start
 
@@ -198,29 +188,6 @@ Get comprehensive stats about song queues.
 Use getQueueStats with streamerName "belleune"
 ```
 
-### manageSongRequest
-
-Create, update, and delete song requests.
-
-**Parameters:**
-- `action` (string, required): The action to perform ("create", "update", or "delete")
-- `streamerName` (string, required): The name of the streamer
-- `requestId` (string, optional): The ID of the request (required for update/delete)
-- `songTitle` (string, optional): The title of the song (required for create/update)
-- `artist` (string, optional): The artist name
-- `requesterName` (string, optional): The name of the person making the request
-- `message` (string, optional): Optional message with the request
-
-**Examples:**
-```
-Use manageSongRequest to create a new request:
-- action: "create"
-- streamerName: "belleune"
-- songTitle: "Bohemian Rhapsody"
-- artist: "Queen"
-- requesterName: "ChatUser123"
-```
-
 ### monitorQueue
 
 Monitor queue changes with configurable polling intervals.
@@ -233,93 +200,6 @@ Monitor queue changes with configurable polling intervals.
 **Example:**
 ```
 Use monitorQueue with streamerName "belleune", interval 60, duration 600
-```
-
-### getPlayHistory
-
-Retrieve play history with filtering and pagination support.
-
-**Parameters:**
-- `streamerName` (string, required): The name of the streamer whose play history to fetch
-- `limit` (number, optional): Maximum number of entries to return (default: 50)
-- `offset` (number, optional): Number of entries to skip for pagination (default: 0)
-- `startDate` (string, optional): Start date filter (ISO format)
-- `endDate` (string, optional): End date filter (ISO format)
-
-**Example:**
-```
-Use getPlayHistory with streamerName "belleune", limit 20, startDate "2024-01-01"
-```
-
-### searchSongs
-
-Search the song database with various filters.
-
-**Parameters:**
-- `query` (string, optional): Search query for song title or artist
-- `artist` (string, optional): Filter by specific artist
-- `genre` (string, optional): Filter by music genre
-- `limit` (number, optional): Maximum number of results (default: 50)
-- `offset` (number, optional): Number of results to skip (default: 0)
-
-**Example:**
-```
-Use searchSongs with query "bohemian", artist "Queen", limit 10
-```
-
-### getSongDetails
-
-Get detailed information about specific songs.
-
-**Parameters:**
-- `songId` (string, required): The unique identifier of the song
-
-**Example:**
-```
-Use getSongDetails with songId "song_12345"
-```
-
-### getOverlayData
-
-Fetch real-time overlay data for streaming software.
-
-**Parameters:**
-- `streamerName` (string, required): The name of the streamer
-- `overlayType` (string, optional): Type of overlay data ("current", "queue", "stats")
-
-**Example:**
-```
-Use getOverlayData with streamerName "belleune", overlayType "current"
-```
-
-### getStreamStats
-
-Get comprehensive streaming statistics and analytics.
-
-**Parameters:**
-- `streamerName` (string, required): The name of the streamer
-- `period` (string, optional): Time period for stats ("day", "week", "month", "year")
-- `startDate` (string, optional): Start date for custom period (ISO format)
-- `endDate` (string, optional): End date for custom period (ISO format)
-
-**Example:**
-```
-Use getStreamStats with streamerName "belleune", period "week"
-```
-
-### manageSongAttributes
-
-Add, update, or remove song attributes like tags and ratings.
-
-**Parameters:**
-- `action` (string, required): The action to perform ("add", "update", "remove")
-- `songId` (string, required): The unique identifier of the song
-- `attributeType` (string, required): Type of attribute ("tag", "rating", "note")
-- `value` (string, optional): The attribute value (required for add/update)
-
-**Example:**
-```
-Use manageSongAttributes with action "add", songId "song_12345", attributeType "tag", value "rock"
 ```
 
 ## Development
@@ -364,27 +244,11 @@ The server will start and wait for MCP protocol messages on stdin. You can send 
 
 ## API Endpoints
 
-The server interacts with these StreamerSongList API endpoints:
+The streamlined server interacts with the following public StreamerSongList endpoints:
 
-### Core Queue Management
-- `GET /v1/streamers/{streamerName}` - Get streamer information
-- `GET /v1/streamers/{streamerName}/queue` - Get song queue
-- `GET /v1/streamers/{streamerName}/queue/stats` - Get queue statistics
-- `POST /v1/streamers/{streamerName}/requests` - Create song request
-- `PUT /v1/streamers/{streamerName}/requests/{requestId}` - Update song request
-- `DELETE /v1/streamers/{streamerName}/requests/{requestId}` - Delete song request
-
-### Play History & Song Database
-- `GET /v1/streamers/{streamerName}/history` - Get play history
-- `GET /v1/songs/search` - Search song database
-- `GET /v1/songs/{songId}` - Get song details
-- `POST /v1/songs/{songId}/attributes` - Add song attributes
-- `PUT /v1/songs/{songId}/attributes/{attributeId}` - Update song attributes
-- `DELETE /v1/songs/{songId}/attributes/{attributeId}` - Remove song attributes
-
-### Overlay & Analytics
-- `GET /v1/streamers/{streamerName}/overlay` - Get overlay data
-- `GET /v1/streamers/{streamerName}/stats` - Get stream statistics
+- `GET /v1/streamers/{streamerName}` – Fetch streamer information (`getStreamerByName`)
+- `GET /v1/streamers/{streamerName}/queue` – Fetch queue contents (`getQueue`, `monitorQueue`)
+- `GET /v1/streamers/{streamerName}/queue/stats` – Fetch queue statistics (`getQueueStats`)
 
 ## Troubleshooting
 
@@ -402,9 +266,9 @@ The server interacts with these StreamerSongList API endpoints:
    - Check for JSON syntax errors in the config file
 
 3. **API errors:**
-   - The StreamerSongList API endpoints are simulated for demonstration
-   - In a real implementation, you would need valid API credentials
-   - Check network connectivity if using real endpoints
+   - The server only calls public StreamerSongList GET endpoints—double-check the streamer name and that their queue is public
+   - StreamerSongList may return `404` if a streamer disables public access to their queue or stats
+   - Verify network connectivity if you continue to see errors
 
 ### Getting Help
 
@@ -425,6 +289,10 @@ MIT License - see LICENSE file for details.
 5. Submit a pull request
 
 ## Changelog
+
+### Unreleased
+- Removed tools that require StreamerSongList authentication to keep the MCP server read-only by default
+- Updated documentation to highlight the simplified, public-only toolset
 
 ### v1.1.0
 - **NEW**: Added 6 additional StreamerSongList API endpoints
