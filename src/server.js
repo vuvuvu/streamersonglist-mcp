@@ -67,6 +67,38 @@ try {
   process.exit(1);
 }
 
+// Parse CLI arguments for default streamer preference
+function resolveDefaultStreamer(argv) {
+  let streamer = null;
+
+  for (let i = 0; i < argv.length; i += 1) {
+    const arg = argv[i];
+
+    if (arg === '--streamer' || arg === '-s') {
+      const next = argv[i + 1];
+      if (next && !next.startsWith('-')) {
+        streamer = next;
+        break;
+      }
+    } else if (arg.startsWith('--streamer=')) {
+      streamer = arg.split('=')[1];
+      break;
+    } else if (arg.startsWith('-') && !arg.startsWith('--') && arg.length > 2) {
+      streamer = arg.slice(1);
+      break;
+    }
+  }
+
+  return streamer;
+}
+
+const cliArgs = process.argv.slice(2);
+const cliDefaultStreamer = resolveDefaultStreamer(cliArgs);
+
+if (cliDefaultStreamer) {
+  process.env.DEFAULT_STREAMER = cliDefaultStreamer;
+}
+
 // Create the server
 let defaultStreamer = process.env.DEFAULT_STREAMER || null;
 
