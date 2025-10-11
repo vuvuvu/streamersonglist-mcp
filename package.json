@@ -7,14 +7,7 @@
     "streamersonglist-mcp": "src/server.js"
   },
   "files": [
-    "src/",
-    "README.md",
-    "LICENSE",
-    "INSTALL.md",
-    "claude-desktop-config.example.json",
-    "claude-desktop-config.with-default-streamer.json",
-    "CLAUDE.md",
-    "docs/"
+    "src/"
   ],
   "scripts": {
     "start": "node src/server.js",
