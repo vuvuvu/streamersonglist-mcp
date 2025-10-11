@@ -15,7 +15,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Architecture Overview
 
-This is a **Model Context Protocol (MCP) server** that provides 11 tools for interacting with StreamerSongList APIs. The server integrates with Claude Desktop and other MCP-compatible clients.
+This is a **Model Context Protocol (MCP) server** that provides tools for interacting with StreamerSongList APIs. The server integrates with Claude Desktop and other MCP-compatible clients.
+
+**IMPORTANT**: Only 4 out of 11 documented API endpoints are functional in the live StreamerSongList API. See `docs/API_TESTING_REPORT.md` for detailed findings.
 
 ### Key Dependencies
 - `@modelcontextprotocol/sdk@^1.13.3` - MCP protocol implementation
@@ -28,18 +30,29 @@ This is a **Model Context Protocol (MCP) server** that provides 11 tools for int
 - **MCP Protocol**: Uses stdio transport for communication with Claude Desktop
 
 ### Tool Categories
-1. **Core Queue Management**: getStreamerByName, getQueue, getQueueStats, manageSongRequest, monitorQueue
-2. **Play History & Song Database**: getPlayHistory, searchSongs, getSongDetails, manageSongAttributes
-3. **Overlay & Analytics**: getOverlayData, getStreamStats
+
+#### ✅ Real API Data (3 tools)
+- **getStreamerByName**: Fetches comprehensive streamer configuration from `/v1/streamers/{name}`
+- **getQueue**: Retrieves current song queue from `/v1/streamers/{name}/queue`
+- **monitorQueue**: Monitors queue changes using real queue data (monitoring logic simulated)
+
+#### ⚠️ Simulated Data (1 tool)
+- **getQueueStats**: Returns realistic queue statistics (API endpoint `/v1/streamers/{name}/queue/stats` returns 404)
 
 ### Environment Variable Support
 Set `DEFAULT_STREAMER` environment variable to automatically supply the streamerName argument for queue-related tools. Tools fall back to this default when the argument is omitted. You can also override it per-run with CLI flags such as `--streamer belleune`, `-s belleune`, or `-belleune` when starting the server.
 
 ### API Integration
 - **Base URL**: `https://api.streamersonglist.com`
-- **Endpoints**: Uses 11 RESTful API endpoints for comprehensive StreamerSongList integration
+- **Working Endpoints**: 3 out of 4 implemented tools use real API endpoints
 - **Error Handling**: Graceful degradation with informative error messages
-- **No authentication required**: Simplified setup (some newer endpoints may require auth)
+- **No authentication required**: Simplified setup for available endpoints
+- **Missing Features**: Queue stats endpoint returns 404, handled with simulated data
+
+### Available API Endpoints
+- ✅ `GET /v1/streamers/{streamerName}` - Full streamer configuration
+- ✅ `GET /v1/streamers/{streamerName}/queue` - Current queue data
+- ❌ `GET /v1/streamers/{streamerName}/queue/stats` - Returns 404 (simulated)
 
 ### Development Patterns
 - **Tool Definition Pattern**: Each tool has comprehensive JSON Schema validation
@@ -56,3 +69,4 @@ Set `DEFAULT_STREAMER` environment variable to automatically supply the streamer
 - **No build process**: Published as source for maximum compatibility
 - **Binary entry**: `src/server.js` is both main file and CLI entry point
 - **Configuration example**: `claude-desktop-config.example.json` shows integration pattern
+- update CLAUDE.md with actual state of the mcp code

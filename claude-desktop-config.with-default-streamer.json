@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "streamersonglist": {
+      "command": "npx",
+      "args": ["streamersonglist-mcp"],
+      "env": {
+        "DEFAULT_STREAMER": "your_streamer_name_here"
+      }
+    }
+  }
+}

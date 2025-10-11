@@ -25,6 +25,8 @@ Add to Claude Desktop via npx:
 }
 ```
 
+See `claude-desktop-config.with-default-streamer.json` for an example with DEFAULT_STREAMER configured.
+
 Optional Smithery install:
 
 ```bash
@@ -48,31 +50,22 @@ npm start
 printf '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}\n' | node src/server.js
 ```
 
-## Available Tools (11 Total)
+## Available Tools (4 Total)
 
-### ✅ Real API Data (4 tools)
+### ✅ Real API Data (3 tools)
 - **getStreamerByName** — Fetch comprehensive streamer configuration
 - **getQueue** — List current song queue with pagination
-- **monitorQueue** — Monitor queue changes with polling intervals
-- **getSongDetails** — Get detailed song information (tabs, lyrics, chords)
+- **monitorQueue** — Monitor queue changes using real data
 
-### ⚠️ Simulated Data (7 tools)
-*These tools return realistic mock data as the API endpoints are not available*
-
-- **getQueueStats** — Queue statistics and analytics
-- **manageSongRequest** — Create/update/delete song requests
-- **getPlayHistory** — Retrieve play history with filtering
-- **searchSongs** — Search song database with filters
-- **manageSongAttributes** — Manage song tags and attributes
-- **getOverlayData** — Fetch overlay data for streaming software
-- **getStreamStats** — Get comprehensive streaming statistics
+### ⚠️ Simulated Data (1 tool)
+- **getQueueStats** — Queue statistics (API endpoint returns 404, uses realistic mock data)
 
 ## API Status
 
-**Working Endpoints**: 4/11+ documented StreamerSongList API endpoints are functional
-- Streamer information, queue management, and song catalog access
+**Working Endpoints**: 3 out of 4 implemented tools use real API data
+- Streamer information and queue management available
 - No authentication required for public endpoints
-- Advanced features (history, stats, polls) not available in live API
+- Queue statistics simulated (endpoint returns 404)
 
 For detailed API testing results, see [docs/API_TESTING_REPORT.md](./docs/API_TESTING_REPORT.md)
 
