@@ -203,7 +203,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 
 // Call tool handler
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  const { name, arguments: args } = request.params;
+  const { name, arguments: rawArgs } = request.params;
+  const args = rawArgs ?? {};
 
   try {
     switch (name) {
