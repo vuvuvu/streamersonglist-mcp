@@ -1,17 +1,15 @@
-# Installation Guide
+# Installation
 
-This guide will help you install and set up the StreamerSongList MCP Server with Claude Desktop.
+Set up the StreamerSongList MCP server quickly with either npx or a local clone.
 
 ## Prerequisites
 
-- **Node.js** (version 18 or higher) - [Download here](https://nodejs.org/)
-- **Claude Desktop** - [Download here](https://claude.ai/download)
+- Node.js 18+
+- (Optional) Claude Desktop for day-to-day use
 
-## Quick Installation
+## Option A — Claude Desktop via npx (Recommended)
 
-### Option 1: Using npx (Simplest)
-
-No installation required! Just add this to your Claude Desktop config:
+Add to your Claude Desktop config:
 
 ```json
 {
@@ -24,130 +22,17 @@ No installation required! Just add this to your Claude Desktop config:
 }
 ```
 
-Then restart Claude Desktop and you're ready to go!
+Restart Claude Desktop.
 
-### Option 2: Automatic Local Setup
-
-1. **Clone and install:**
-   ```bash
-   git clone https://github.com/vuvuvu/streamersonglist-mcp.git
-   cd streamersonglist-mcp
-   npm install
-   ```
-
-2. **Test the server:**
-   ```bash
-   npm test
-   ```
-
-3. **Automatically configure Claude Desktop:**
-   ```bash
-   npm run setup
-   ```
-
-4. **Restart Claude Desktop** and you're ready to go!
-
-### Option 2: Manual Setup
-
-1. **Clone and install:**
-   ```bash
-   git clone https://github.com/vuvuvu/streamersonglist-mcp.git
-   cd streamersonglist-mcp
-   npm install
-   ```
-
-2. **Test the server:**
-   ```bash
-   npm test
-   ```
-
-3. **Find your Claude Desktop config file:**
-   - **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-   - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
-
-4. **Add the server configuration:**
-   ```json
-   {
-     "mcpServers": {
-       "streamersonglist": {
-         "command": "node",
-         "args": ["src/server.js"],
-         "cwd": "/full/path/to/streamersonglist-mcp"
-       }
-     }
-   }
-   ```
-
-5. **Restart Claude Desktop**
-
-## Verification
-
-After setup, test that everything works:
-
-1. **Open Claude Desktop**
-2. **Ask Claude:** *"What MCP tools do you have available?"*
-3. **You should see StreamerSongList tools listed**
-4. **Test a tool:** *"Use the getStreamerByName tool to get information about 'belleune'"*
-
-## Troubleshooting
-
-### Server Not Starting
+## Option B — Local Clone
 
 ```bash
-# Check Node.js version (should be 18+)
-node --version
-
-# Test server manually
-npm start
-# Should show: "StreamerSongList MCP Server running on stdio"
-# Press Ctrl+C to exit
-```
-
-### Claude Desktop Not Seeing Server
-
-1. **Check config file location:**
-   ```bash
-   # macOS
-   cat ~/Library/Application\ Support/Claude/claude_desktop_config.json
-   
-   # Windows
-   type %APPDATA%\Claude\claude_desktop_config.json
-   ```
-
-2. **Verify the path in config is correct:**
-   - Use absolute paths (not relative)
-   - Ensure the `cwd` points to your project directory
-   - Check for JSON syntax errors
-
-3. **Restart Claude Desktop completely:**
-   - Quit the application entirely
-   - Reopen it
-   - Wait a moment for servers to load
-
-### Permission Issues
-
-```bash
-# Make sure the server file is executable
-chmod +x src/server.js
-
-# Check file permissions
-ls -la src/server.js
-```
-
-### Dependencies Issues
-
-```bash
-# Clear npm cache and reinstall
-npm cache clean --force
-rm -rf node_modules package-lock.json
+git clone https://github.com/vuvuvu/streamersonglist-mcp.git
+cd streamersonglist-mcp
 npm install
 ```
 
-## Advanced Configuration
-
-### Environment Variables
-
-You can set environment variables in the Claude Desktop config:
+Register the server with Claude Desktop using either:
 
 ```json
 {
@@ -155,48 +40,52 @@ You can set environment variables in the Claude Desktop config:
     "streamersonglist": {
       "command": "node",
       "args": ["src/server.js"],
-      "cwd": "/path/to/streamersonglist-mcp",
-      "env": {
-        "API_BASE_URL": "https://custom-api.example.com",
-        "DEBUG": "true"
-      }
+      "cwd": "/absolute/path/to/streamersonglist-mcp"
     }
   }
 }
 ```
 
-### Multiple Servers
+## Inspect / Verify
 
-You can run multiple MCP servers:
+Recommended: use the MCP Inspector to explore tools and make requests:
+
+```bash
+npx @modelcontextprotocol/inspector@latest -- npx streamersonglist-mcp
+# or when running from a local clone
+npx @modelcontextprotocol/inspector@latest -- node src/server.js
+```
+
+Scripted checks:
+
+```bash
+npm test   # starts server and verifies tools/list
+npm start  # run server on stdio (advanced)
+printf '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}\n' | node src/server.js
+```
+
+## Optional: Default Streamer
+
+Provide a fallback when `streamerName` is omitted:
 
 ```json
 {
   "mcpServers": {
     "streamersonglist": {
-      "command": "node",
-      "args": ["src/server.js"],
-      "cwd": "/path/to/streamersonglist-mcp"
-    },
-    "other-server": {
-      "command": "python",
-      "args": ["server.py"],
-      "cwd": "/path/to/other-server"
+      "command": "npx",
+      "args": ["streamersonglist-mcp"],
+      "env": { "DEFAULT_STREAMER": "public_streamer" }
     }
   }
 }
 ```
 
-## Getting Help
+CLI alternatives:
 
-- **GitHub Issues**: Report problems or request features
-- **MCP Documentation**: https://modelcontextprotocol.io
-- **Claude Desktop Help**: https://claude.ai/help
+```bash
+DEFAULT_STREAMER=public_streamer npx streamersonglist-mcp
+npx streamersonglist-mcp --streamer public_streamer
+```
 
-## Next Steps
+Security tip: do not default to private streamer names; this server targets public read-only endpoints only.
 
-Once installed, try these commands with Claude:
-
-- *"Get information about streamer 'belleune' using StreamerSongList tools"*
-- *"Show me the current song queue for 'belleune'"*
-- *"Get queue statistics for a popular streamer"*
-- *"Help me create a song request for 'belleune'"*

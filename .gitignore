@@ -85,3 +85,8 @@ Desktop.ini
 # Logs
 logs
 *.log
+
+# Temporary AI/IDE directories
+.claude/
+.kilocode/
+.trae/
