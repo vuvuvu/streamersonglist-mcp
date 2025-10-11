@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "streamersonglist": {
-      "command": "npx",
-      "args": ["streamersonglist-mcp"]
-    }
-  }
-}
