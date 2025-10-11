@@ -1,6 +1,6 @@
 {
   "name": "streamersonglist-mcp",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A Model Context Protocol (MCP) server for interacting with StreamerSongList APIs",
   "main": "src/server.js",
   "bin": {
@@ -11,7 +11,10 @@
     "README.md",
     "LICENSE",
     "INSTALL.md",
-    "claude-desktop-config.example.json"
+    "claude-desktop-config.example.json",
+    "claude-desktop-config.with-default-streamer.json",
+    "CLAUDE.md",
+    "docs/"
   ],
   "scripts": {
     "start": "node src/server.js",
