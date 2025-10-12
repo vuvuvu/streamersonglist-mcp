@@ -154,21 +154,7 @@ const tools = [
       required: [],
     },
   },
-  {
-    name: "getQueueStats",
-    description: "Get comprehensive stats about song queues including total songs, duration, and popular tracks",
-    inputSchema: {
-      type: "object",
-      properties: {
-        streamerName: {
-          type: "string",
-          description: "The name of the streamer whose queue stats to fetch",
-        },
-      },
-      required: [],
-    },
-  },
-  {
+    {
     name: "monitorQueue",
     description: "Monitor queue changes with configurable polling intervals",
     inputSchema: {
@@ -337,54 +323,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             content: [{
               type: "text",
               text: JSON.stringify(queueData, null, 2)
-            }]
-          };
-        } catch (error) {
-          return {
-            content: [{
-              type: "text",
-              text: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`
-            }]
-          };
-        }
-      }
-
-      case "getQueueStats": {
-        const { streamerName = defaultStreamer } = args;
-
-        if (!streamerName) {
-          throw new Error(
-            "streamerName is required. Provide a streamerName or set the DEFAULT_STREAMER environment variable."
-          );
-        }
-        
-        try {
-          const response = await fetch(`https://api.streamersonglist.com/v1/streamers/${encodeURIComponent(streamerName)}/queue/stats`);
-          
-          if (!response.ok) {
-            return {
-              content: [{
-                type: "text",
-                text: `Error fetching queue stats: ${response.status} ${response.statusText}`
-              }]
-            };
-          }
-          
-          const statsData = await response.json();
-          
-          const summary = {
-            totalSongs: statsData.totalSongs || 0,
-            totalDuration: statsData.totalDuration || 0,
-            averageWaitTime: statsData.averageWaitTime || 0,
-            mostRequestedArtist: statsData.mostRequestedArtist || 'N/A',
-            mostRequestedSong: statsData.mostRequestedSong || 'N/A',
-            queueStatus: statsData.queueStatus || 'unknown'
-          };
-          
-          return {
-            content: [{
-              type: "text",
-              text: `Queue Statistics for ${streamerName}:\n${JSON.stringify(summary, null, 2)}`
             }]
           };
         } catch (error) {
