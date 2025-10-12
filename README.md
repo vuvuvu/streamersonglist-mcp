@@ -136,4 +136,16 @@ MIT — see `LICENSE`.
 
 ## Contributing
 
-PRs welcome. Please run `npm test` before submitting.
+Contributions are welcome via pull requests. Due to limitations of the public StreamerSongList API, scope for major new features is intentionally modest — helpful contributions include:
+- Bug fixes, error handling, and robustness improvements
+- Documentation updates and examples
+- Small tooling or DX enhancements (tests, CI, config)
+
+Please open an issue to discuss larger ideas before starting work, and run `npm test` before submitting PRs.
+
+## Credits
+
+This project builds on the excellent StreamerSonglist service. All data and API functionality are provided by StreamerSonglist:
+- https://www.streamersonglist.com
+
+This project is community-maintained and not affiliated with or endorsed by StreamerSonglist.
