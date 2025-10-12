@@ -5,16 +5,15 @@ This directory contains detailed documentation for the StreamerSongList MCP Serv
 ## Files
 
 ### API Documentation
-- **[API_TESTING_REPORT.md](./API_TESTING_REPORT.md)** - Comprehensive API testing results and findings
-- **[API_DISCREPANCIES.md](./API_DISCREPANCIES.md)** - Analysis of documentation vs. actual API capabilities
-- **[SSLv1-keydata.md](./SSLv1-keydata.md)** - Original StreamerSongList API data models (for reference)
+- **[API_TESTING_REPORT.md](./API_TESTING_REPORT.md)** - API testing results and findings (public endpoints)
+- **[SSLv1-keydata.md](./SSLv1-keydata.md)** - StreamerSongList API data models (reference)
 
 ### Project Analysis
-- **[Enhanced-mcp.md](./Enhanced-mcp.md)** - Enhancement proposals and technical analysis
-- **[AGENTS.md](./AGENTS.md)** - AI agent integration strategies
+- **[Enhanced-mcp.md](./Enhanced-mcp.md)** - Enhancement proposals and technical notes
+- **[AGENTS.md](./AGENTS.md)** - Repository guidelines for contributors
 
 ### Research Materials
-- **API Endpoint Discovery Methods** - PDF research documents on API discovery techniques
+- API Endpoint Discovery Methods (PDFs) - Research on API discovery techniques
 
 ## Quick Reference
 
@@ -25,8 +24,10 @@ These documentation files are primarily for:
 - Understanding API limitations and capabilities
 - Research and development planning
 
-## API Status Summary
+## Status Summary
 
-- ✅ **4 endpoints working** with real data
-- ❌ **7+ endpoints documented but not available**
-- 📊 **Full testing report** available in API_TESTING_REPORT.md
+- ✅ Implemented tools use public, read-only API endpoints
+- 📦 Package publishes only `src/` for minimal installs
+- ⚙️ Configuration: `DEFAULT_STREAMER`, `SSL_API_BASE`
+
+For most users, start with the project [README.md](../README.md). Developers can explore deeper docs here.

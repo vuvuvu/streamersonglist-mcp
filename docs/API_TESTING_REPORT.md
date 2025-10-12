@@ -124,7 +124,7 @@ The existing MCP server (`src/server.js`) contains 11 tools, but only 4 have rea
 
 1. **`getStreamerByName`** ✅ - Fully functional
 2. **`getQueue`** ✅ - Fully functional
-3. **`getQueueStats`** ❌ - Returns simulated data
+3. **`getQueueStats`** ❌ - Not implemented by this server; upstream endpoint returns 404
 4. **`manageSongRequest`** ❌ - Returns simulated data
 5. **`monitorQueue`** ✅ - Works with real queue data
 6. **`getPlayHistory`** ❌ - Returns simulated data

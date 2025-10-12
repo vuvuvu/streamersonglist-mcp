@@ -115,6 +115,12 @@ DEFAULT_STREAMER=public_streamer npx streamersonglist-mcp
 npx streamersonglist-mcp --streamer public_streamer
 ```
 
+Configuration options:
+- `DEFAULT_STREAMER` — default streamer when an argument is omitted
+- `SSL_API_BASE` — override API base (default `https://api.streamersonglist.com/v1`)
+
+Version info: The server reports its version from `package.json`, matching the published package.
+
 Security tip: use only public streamer names; the server calls public read-only endpoints.
 
 ## Scripts
@@ -131,4 +137,3 @@ MIT — see `LICENSE`.
 ## Contributing
 
 PRs welcome. Please run `npm test` before submitting.
-
