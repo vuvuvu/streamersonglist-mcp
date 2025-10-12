@@ -50,22 +50,45 @@ npm start
 printf '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}\n' | node src/server.js
 ```
 
-## Available Tools (4 Total)
+## Available Tools (6 Total)
 
-### ✅ Real API Data (3 tools)
+### ✅ All Real API Data (6 tools)
 - **getStreamerByName** — Fetch comprehensive streamer configuration
 - **getQueue** — List current song queue with pagination
+- **getSongs** — Fetch complete song list with pagination
+- **searchSongs** — Search songs by title or artist
+- **getSongDetails** — Get detailed information about a specific song
 - **monitorQueue** — Monitor queue changes using real data
 
-### ⚠️ Simulated Data (1 tool)
-- **getQueueStats** — Queue statistics (API endpoint returns 404, uses realistic mock data)
+### Usage Examples
+
+For comprehensive examples of how to use these tools, see **[docs/USAGE_EXAMPLES.md](./docs/USAGE_EXAMPLES.md)** including:
+
+- 🎵 Music discovery and analysis
+- 📊 Content creator tools and stream planning
+- 🤖 AI assistant integration and smart recommendations
+- 📈 Data analysis and insights
+- 🎪 Event planning and collaboration tools
+- 🛠️ Technical applications and automation
+
+Quick examples:
+```json
+// Search for songs
+{"tool": "searchSongs", "arguments": {"streamerName": "belleune", "query": "Frank Sinatra"}}
+
+// Get most popular songs
+{"tool": "getSongs", "arguments": {"streamerName": "belleune", "limit": 20}}
+
+// Compare streamer libraries
+{"tool": "getSongs", "arguments": {"streamerName": "vu_vu", "limit": 50}}
+```
 
 ## API Status
 
-**Working Endpoints**: 3 out of 4 implemented tools use real API data
-- Streamer information and queue management available
+**Working Endpoints**: All 6 tools use real API data
+- Streamer information, queue management, and full song library access
 - No authentication required for public endpoints
-- Queue statistics simulated (endpoint returns 404)
+- All features fully functional with real StreamerSongList API data
 
 For detailed API testing results, see [docs/API_TESTING_REPORT.md](./docs/API_TESTING_REPORT.md)
 
