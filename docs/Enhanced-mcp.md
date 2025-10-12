@@ -93,15 +93,15 @@ api.streamersonglist.com
 
 7. Default Streamer Handling & Safe Mode
 
-The existing MCP server supports a DEFAULT_STREAMER environment variable to simplify tool calls: if a user omits streamerName when invoking getQueue, getQueueStats or getStreamerByName, the server automatically uses the configured default
+The existing MCP server supports a DEFAULT_STREAMER environment variable to simplify tool calls: if a user omits streamerName when invoking tools (e.g., getQueue, getSongs, getStreamerByName), the server automatically uses the configured default.
 raw.githubusercontent.com
 . When enhancing the server, keep this behaviour for convenience but ensure it’s explicit and overridable:
 
-Expose a configuration interface (e.g., command line flag or GUI) to set or update DEFAULT_STREAMER without editing environment variables.
+Expose a configuration interface (e.g., command line flag or GUI) to set or update DEFAULT_STREAMER without editing environment variables. Also support overriding the API base with `SSL_API_BASE`.
 
 Validate default exists: on startup, call getStreamerByName with the default; if it returns 404, prompt for a valid name rather than failing silently.
 
-Allow overrides: even when DEFAULT_STREAMER is set, your enhanced tools (e.g., searchSongs or findSimilarSongs) should accept a streamerName parameter to override the default.
+Allow overrides: even when DEFAULT_STREAMER is set, tools accept a streamerName parameter to override the default. The server already implements `searchSongs` (client-side filter) and `getSongDetails` (client-side selection) atop `getSongs`.
 
 The branch codex/update-default-streamer-handling intentionally limits the server to public, read‑only GET endpoints for safety
 raw.githubusercontent.com

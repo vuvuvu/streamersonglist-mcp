@@ -1,12 +1,20 @@
 #!/usr/bin/env node
 
-// Add fetch polyfill for Node.js environments
-const { fetch } = require('undici');
-globalThis.fetch = fetch;
+// Use Node's built-in fetch (Node >= 18). Fail fast if missing.
+if (typeof globalThis.fetch !== 'function') {
+  console.error('Error: global fetch not found. Node.js 18+ is required.');
+  process.exit(1);
+}
 
 // Import required modules
 const path = require('path');
 const fs = require('fs');
+const pkg = require('../package.json');
+
+// Derive runtime metadata and configuration from package.json / env
+const PACKAGE_VERSION = pkg.version || '0.0.0';
+const SDK_DEP_RANGE = (pkg.dependencies && pkg.dependencies['@modelcontextprotocol/sdk']) || '';
+const API_BASE = process.env.SSL_API_BASE || 'https://api.streamersonglist.com/v1';
 
 // Function to find the MCP SDK
 function findMcpSdk() {
@@ -62,8 +70,9 @@ try {
   global.ListToolsRequestSchema = sdk.ListToolsRequestSchema;
 } catch (error) {
   console.error("Error loading MCP SDK:", error.message);
-  console.error("Please install the MCP SDK with: npm install @modelcontextprotocol/sdk@1.13.3");
-  console.error("If the error persists, try installing the package globally: npm install -g @modelcontextprotocol/sdk@1.13.3");
+  const sdkHint = SDK_DEP_RANGE || 'latest';
+  console.error(`Please install the MCP SDK with: npm install @modelcontextprotocol/sdk@${sdkHint}`);
+  console.error(`If the error persists, try installing the package globally: npm install -g @modelcontextprotocol/sdk@${sdkHint}`);
   process.exit(1);
 }
 
@@ -105,7 +114,7 @@ let defaultStreamer = process.env.DEFAULT_STREAMER || null;
 const server = new global.Server(
   {
     name: "streamersonglist-mcp",
-    version: "1.1.0",
+    version: PACKAGE_VERSION,
   },
   {
     capabilities: {
@@ -154,21 +163,7 @@ const tools = [
       required: [],
     },
   },
-  {
-    name: "getQueueStats",
-    description: "Get comprehensive stats about song queues including total songs, duration, and popular tracks",
-    inputSchema: {
-      type: "object",
-      properties: {
-        streamerName: {
-          type: "string",
-          description: "The name of the streamer whose queue stats to fetch",
-        },
-      },
-      required: [],
-    },
-  },
-  {
+    {
     name: "monitorQueue",
     description: "Monitor queue changes with configurable polling intervals",
     inputSchema: {
@@ -190,6 +185,71 @@ const tools = [
         },
       },
       required: [],
+    },
+  },
+  {
+    name: "getSongs",
+    description: "Fetch the complete song list for a streamer with pagination support",
+    inputSchema: {
+      type: "object",
+      properties: {
+        streamerName: {
+          type: "string",
+          description: "The name of the streamer whose song list to fetch",
+        },
+        limit: {
+          type: "number",
+          description: "Maximum number of songs to return (default: 100)",
+          default: 100,
+        },
+        offset: {
+          type: "number",
+          description: "Number of songs to skip for pagination (default: 0)",
+          default: 0,
+        },
+      },
+      required: [],
+    },
+  },
+  {
+    name: "searchSongs",
+    description: "Search within a streamer's song list by title or artist",
+    inputSchema: {
+      type: "object",
+      properties: {
+        streamerName: {
+          type: "string",
+          description: "The name of the streamer whose songs to search",
+        },
+        query: {
+          type: "string",
+          description: "Search query to match against song titles and artists",
+        },
+        limit: {
+          type: "number",
+          description: "Maximum number of results to return (default: 20)",
+          default: 20,
+        },
+      },
+      required: ["query"],
+    },
+  },
+  {
+    name: "getSongDetails",
+    description: "Get detailed information about a specific song by ID",
+    inputSchema: {
+      type: "object",
+      properties: {
+        streamerName: {
+          type: "string",
+          description: "The name of the streamer who owns the song",
+        },
+        songId: {
+          type: "number",
+          description: "The ID of the song to fetch details for",
+        },
+      },
+      required: ["songId"],
     },
   },
 ];
@@ -218,7 +278,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         }
         
         try {
-          const response = await fetch(`https://api.streamersonglist.com/v1/streamers/${encodeURIComponent(streamerName)}`);
+          const response = await fetch(`${API_BASE}/streamers/${encodeURIComponent(streamerName)}`);
           
           if (!response.ok) {
             return {
@@ -256,7 +316,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         }
         
         try {
-          const response = await fetch(`https://api.streamersonglist.com/v1/streamers/${encodeURIComponent(streamerName)}/queue?limit=${limit}&offset=${offset}`);
+          const response = await fetch(`${API_BASE}/streamers/${encodeURIComponent(streamerName)}/queue?limit=${limit}&offset=${offset}`);
           
           if (!response.ok) {
             return {
@@ -272,54 +332,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             content: [{
               type: "text",
               text: JSON.stringify(queueData, null, 2)
-            }]
-          };
-        } catch (error) {
-          return {
-            content: [{
-              type: "text",
-              text: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`
-            }]
-          };
-        }
-      }
-
-      case "getQueueStats": {
-        const { streamerName = defaultStreamer } = args;
-
-        if (!streamerName) {
-          throw new Error(
-            "streamerName is required. Provide a streamerName or set the DEFAULT_STREAMER environment variable."
-          );
-        }
-        
-        try {
-          const response = await fetch(`https://api.streamersonglist.com/v1/streamers/${encodeURIComponent(streamerName)}/queue/stats`);
-          
-          if (!response.ok) {
-            return {
-              content: [{
-                type: "text",
-                text: `Error fetching queue stats: ${response.status} ${response.statusText}`
-              }]
-            };
-          }
-          
-          const statsData = await response.json();
-          
-          const summary = {
-            totalSongs: statsData.totalSongs || 0,
-            totalDuration: statsData.totalDuration || 0,
-            averageWaitTime: statsData.averageWaitTime || 0,
-            mostRequestedArtist: statsData.mostRequestedArtist || 'N/A',
-            mostRequestedSong: statsData.mostRequestedSong || 'N/A',
-            queueStatus: statsData.queueStatus || 'unknown'
-          };
-          
-          return {
-            content: [{
-              type: "text",
-              text: `Queue Statistics for ${streamerName}:\n${JSON.stringify(summary, null, 2)}`
             }]
           };
         } catch (error) {
@@ -377,6 +389,152 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             content: [{
               type: "text",
               text: `Error setting up monitoring: ${error instanceof Error ? error.message : 'Unknown error'}`
+            }]
+          };
+        }
+      }
+
+      case "getSongs": {
+        const { streamerName = defaultStreamer, limit = 100, offset = 0 } = args;
+
+        if (!streamerName) {
+          throw new Error(
+            "streamerName is required. Provide a streamerName or set the DEFAULT_STREAMER environment variable."
+          );
+        }
+
+        try {
+          const response = await fetch(`${API_BASE}/streamers/${encodeURIComponent(streamerName)}/songs?limit=${limit}&offset=${offset}`);
+
+          if (!response.ok) {
+            return {
+              content: [{
+                type: "text",
+                text: `Error fetching song list: ${response.status} ${response.statusText}`
+              }]
+            };
+          }
+
+          const songsData = await response.json();
+          return {
+            content: [{
+              type: "text",
+              text: JSON.stringify(songsData, null, 2)
+            }]
+          };
+        } catch (error) {
+          return {
+            content: [{
+              type: "text",
+              text: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`
+            }]
+          };
+        }
+      }
+
+      case "searchSongs": {
+        const { streamerName = defaultStreamer, query, limit = 20 } = args;
+
+        if (!streamerName) {
+          throw new Error(
+            "streamerName is required. Provide a streamerName or set the DEFAULT_STREAMER environment variable."
+          );
+        }
+
+        if (!query) {
+          throw new Error("query is required for song search");
+        }
+
+        try {
+          // First get all songs, then filter locally
+          const response = await fetch(`${API_BASE}/streamers/${encodeURIComponent(streamerName)}/songs?limit=1000`);
+
+          if (!response.ok) {
+            return {
+              content: [{
+                type: "text",
+                text: `Error fetching songs for search: ${response.status} ${response.statusText}`
+              }]
+            };
+          }
+
+          const songsData = await response.json();
+          const allSongs = songsData.items || songsData; // Handle different response formats
+          const searchQuery = query.toLowerCase();
+
+          // Filter songs by title or artist
+          const filteredSongs = allSongs.filter(song => {
+            const title = (song.title || '').toLowerCase();
+            const artist = (song.artist || '').toLowerCase();
+            return title.includes(searchQuery) || artist.includes(searchQuery);
+          }).slice(0, limit);
+
+          return {
+            content: [{
+              type: "text",
+              text: `Found ${filteredSongs.length} songs matching "${query}":\n${JSON.stringify(filteredSongs, null, 2)}`
+            }]
+          };
+        } catch (error) {
+          return {
+            content: [{
+              type: "text",
+              text: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`
+            }]
+          };
+        }
+      }
+
+      case "getSongDetails": {
+        const { streamerName = defaultStreamer, songId } = args;
+
+        if (!streamerName) {
+          throw new Error(
+            "streamerName is required. Provide a streamerName or set the DEFAULT_STREAMER environment variable."
+          );
+        }
+
+        if (!songId) {
+          throw new Error("songId is required");
+        }
+
+        try {
+          // Get all songs and find the specific one
+          const response = await fetch(`${API_BASE}/streamers/${encodeURIComponent(streamerName)}/songs`);
+
+          if (!response.ok) {
+            return {
+              content: [{
+                type: "text",
+                text: `Error fetching songs: ${response.status} ${response.statusText}`
+              }]
+            };
+          }
+
+          const songsData = await response.json();
+          const allSongs = songsData.items || songsData; // Handle different response formats
+          const song = allSongs.find(s => s.id === songId);
+
+          if (!song) {
+            return {
+              content: [{
+                type: "text",
+                text: `Song with ID ${songId} not found for streamer ${streamerName}`
+              }]
+            };
+          }
+
+          return {
+            content: [{
+              type: "text",
+              text: JSON.stringify(song, null, 2)
+            }]
+          };
+        } catch (error) {
+          return {
+            content: [{
+              type: "text",
+              text: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`
             }]
           };
         }
