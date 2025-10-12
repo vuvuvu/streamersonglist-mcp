@@ -19,7 +19,7 @@ tool_version: "claude-4-sonnet@2025-10-12"
 **Top Signals**:
 - **Languages**: JavaScript 100% (780 LoC excluding node_modules)
 - **Files**: 19 project files (excluding dependencies)
-- **Primary Framework**: @modelcontextprotocol/sdk v1.13.3
+- **Primary Framework**: @modelcontextprotocol/sdk (project now depends on ^1.20.0)
 - **Runtime**: Node.js ≥18.0.0
 
 **Evidence**:
@@ -27,6 +27,8 @@ tool_version: "claude-4-sonnet@2025-10-12"
 - `package.json:2` - Project name "streamersonglist-mcp"
 - `package.json:15-17` - Dependencies: @modelcontextprotocol/sdk, undici
 - `package-lock.json:6` - Node.js version requirement ">=18.0.0"
+
+> Note: This report is a snapshot from 2025-10-12. Current package versions: `@modelcontextprotocol/sdk@^1.20.0`, `undici@^7.16.0`. API base is configurable via `SSL_API_BASE` (default `https://api.streamersonglist.com/v1`).
 
 ## 2. Architecture at a Glance
 

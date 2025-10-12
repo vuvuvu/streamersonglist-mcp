@@ -6,7 +6,7 @@ This document provides practical examples of how to use the StreamerSongList MCP
 
 - **getStreamerByName** - Fetch detailed streamer information
 - **getQueue** - View current song queue with pagination
-- **getQueueStats** - Get queue statistics
+ 
 - **monitorQueue** - Monitor queue changes over time
 - **getSongs** - Fetch complete song list with pagination
 - **searchSongs** - Search songs by title or artist
@@ -163,16 +163,8 @@ Monitor current queue status:
 }
 ```
 
-```json
-{
-  "tool": "getQueueStats",
-  "arguments": {
-    "streamerName": "belleune"
-  }
-}
-```
-
-**Use Case**: Understand queue health and viewer engagement
+ 
+Use case: For queue analytics, combine `getQueue` responses over time or use `monitorQueue` to observe changes.
 
 ## 🎯 Automated Workflows
 
