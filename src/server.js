@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 
-// Add fetch polyfill for Node.js environments
-const { fetch } = require('undici');
-globalThis.fetch = fetch;
+// Use Node's built-in fetch (Node >= 18). Fail fast if missing.
+if (typeof globalThis.fetch !== 'function') {
+  console.error('Error: global fetch not found. Node.js 18+ is required.');
+  process.exit(1);
+}
 
 // Import required modules
 const path = require('path');
