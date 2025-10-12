@@ -31,3 +31,8 @@ These documentation files are primarily for:
 - ⚙️ Configuration: `DEFAULT_STREAMER`, `SSL_API_BASE`
 
 For most users, start with the project [README.md](../README.md). Developers can explore deeper docs here.
+
+## Contributing & Credits
+
+- Contributions are welcome via pull requests (docs, fixes, small enhancements). The upstream API has limited surface area, so large feature additions may be out of scope.
+- StreamerSonglist is the original service and API provider: https://www.streamersonglist.com. This project is not affiliated with or endorsed by StreamerSonglist.
