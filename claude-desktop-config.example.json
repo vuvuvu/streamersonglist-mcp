@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "streamersonglist": {
+      "command": "npx",
+      "args": ["streamersonglist-mcp"]
+    },
+    "streamersonglist-vu_vu": {
+      "command": "npx",
+      "args": ["streamersonglist-mcp", "-vu_vu"]
+    }
+  }
+}
