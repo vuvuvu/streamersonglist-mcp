@@ -7,6 +7,12 @@ globalThis.fetch = fetch;
 // Import required modules
 const path = require('path');
 const fs = require('fs');
+const pkg = require('../package.json');
+
+// Derive runtime metadata and configuration from package.json / env
+const PACKAGE_VERSION = pkg.version || '0.0.0';
+const SDK_DEP_RANGE = (pkg.dependencies && pkg.dependencies['@modelcontextprotocol/sdk']) || '';
+const API_BASE = process.env.SSL_API_BASE || 'https://api.streamersonglist.com/v1';
 
 // Function to find the MCP SDK
 function findMcpSdk() {
@@ -62,8 +68,9 @@ try {
   global.ListToolsRequestSchema = sdk.ListToolsRequestSchema;
 } catch (error) {
   console.error("Error loading MCP SDK:", error.message);
-  console.error("Please install the MCP SDK with: npm install @modelcontextprotocol/sdk@1.13.3");
-  console.error("If the error persists, try installing the package globally: npm install -g @modelcontextprotocol/sdk@1.13.3");
+  const sdkHint = SDK_DEP_RANGE || 'latest';
+  console.error(`Please install the MCP SDK with: npm install @modelcontextprotocol/sdk@${sdkHint}`);
+  console.error(`If the error persists, try installing the package globally: npm install -g @modelcontextprotocol/sdk@${sdkHint}`);
   process.exit(1);
 }
 
@@ -105,7 +112,7 @@ let defaultStreamer = process.env.DEFAULT_STREAMER || null;
 const server = new global.Server(
   {
     name: "streamersonglist-mcp",
-    version: "1.1.0",
+    version: PACKAGE_VERSION,
   },
   {
     capabilities: {
@@ -269,7 +276,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         }
         
         try {
-          const response = await fetch(`https://api.streamersonglist.com/v1/streamers/${encodeURIComponent(streamerName)}`);
+          const response = await fetch(`${API_BASE}/streamers/${encodeURIComponent(streamerName)}`);
           
           if (!response.ok) {
             return {
@@ -307,7 +314,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         }
         
         try {
-          const response = await fetch(`https://api.streamersonglist.com/v1/streamers/${encodeURIComponent(streamerName)}/queue?limit=${limit}&offset=${offset}`);
+          const response = await fetch(`${API_BASE}/streamers/${encodeURIComponent(streamerName)}/queue?limit=${limit}&offset=${offset}`);
           
           if (!response.ok) {
             return {
@@ -395,7 +402,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         }
 
         try {
-          const response = await fetch(`https://api.streamersonglist.com/v1/streamers/${encodeURIComponent(streamerName)}/songs?limit=${limit}&offset=${offset}`);
+          const response = await fetch(`${API_BASE}/streamers/${encodeURIComponent(streamerName)}/songs?limit=${limit}&offset=${offset}`);
 
           if (!response.ok) {
             return {
@@ -438,7 +445,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
         try {
           // First get all songs, then filter locally
-          const response = await fetch(`https://api.streamersonglist.com/v1/streamers/${encodeURIComponent(streamerName)}/songs?limit=1000`);
+          const response = await fetch(`${API_BASE}/streamers/${encodeURIComponent(streamerName)}/songs?limit=1000`);
 
           if (!response.ok) {
             return {
@@ -491,7 +498,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
         try {
           // Get all songs and find the specific one
-          const response = await fetch(`https://api.streamersonglist.com/v1/streamers/${encodeURIComponent(streamerName)}/songs`);
+          const response = await fetch(`${API_BASE}/streamers/${encodeURIComponent(streamerName)}/songs`);
 
           if (!response.ok) {
             return {
