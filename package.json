@@ -12,9 +12,7 @@
   "scripts": {
     "start": "node src/server.js",
     "test": "node test-server.js",
-    "setup": "node setup-claude.js",
-    "build": "npx smithery build",
-    "dev": "npx smithery dev"
+    "setup": "node setup-claude.js"
   },
   "keywords": [
     "mcp",
@@ -30,11 +28,7 @@
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.20.0",
-    "undici": "^7.16.0",
-    "zod": "^3.25.46"
-  },
-  "devDependencies": {
-    "@smithery/cli": "^1.4.7"
+    "undici": "^7.16.0"
   },
   "engines": {
     "node": ">=18.0.0"
