@@ -623,3 +623,5 @@ Use song data for:
 - Predictive queue management
 
 The StreamerSongList MCP server provides powerful programmatic access to streamer music libraries, enabling endless possibilities for automation, analysis, content creation, and AI-powered music experiences!
+
+Note: Please be considerate of other users and avoid overloading the API with excessive requests. This tool only works due to the Streamersonglist.com api being open to the public. 
