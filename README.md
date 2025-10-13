@@ -1,11 +1,12 @@
 # StreamerSongList MCP Server
 
+[![smithery badge](https://smithery.ai/badge/@vuvuvu/streamersonglist-mcp)](https://smithery.ai/server/@vuvuvu/streamersonglist-mcp)
 [![Test MCP Server](https://github.com/vuvuvu/streamersonglist-mcp/actions/workflows/test.yml/badge.svg)](https://github.com/vuvuvu/streamersonglist-mcp/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
-[![smithery badge](https://smithery.ai/badge/@vuvuvu/streamersonglist-mcp)](https://smithery.ai/server/@vuvuvu/streamersonglist-mcp)
 
-MCP server exposing read-only StreamerSongList tools. Works with Claude Desktop and any MCP client.
+
+MCP server exposing read-only StreamerSongList tools. Use LLM's to interface with a Live Streamers Song list. Claude Desktop and any MCP client.
 
 ## Quick Start
 
@@ -27,11 +28,32 @@ Add to Claude Desktop via npx:
 
 See `claude-desktop-config.with-default-streamer.json` for an example with DEFAULT_STREAMER configured.
 
-Optional Smithery install:
+### Click on the smithery badge to test out the mcp server or deploy your own. 
+[![smithery badge](https://smithery.ai/badge/@vuvuvu/streamersonglist-mcp)](https://smithery.ai/server/@vuvuvu/streamersonglist-mcp)
+
+Optional Smithery install (requires Smithery account):
 
 ```bash
+# First login to Smithery (one-time setup)
+npx -y @smithery/cli login
+
+# Then install the MCP server
 npx -y @smithery/cli install @vuvuvu/streamersonglist-mcp --client claude
 ```
+
+## Deploy to Smithery.ai
+
+Want to test this MCP server instantly without any local setup? Click the Smithery badge above or visit:
+
+**[🚀 Deploy to Smithery.ai](https://smithery.ai/server/@vuvuvu/streamersonglist-mcp)**
+
+Smithery.ai provides a hosted environment where you can:
+- Test all StreamerSongList tools immediately in your browser
+- No installation or configuration required
+- Perfect for trying out the server before local setup
+- Great for sharing with others or quick demonstrations
+
+Simply click the badge at the top of this README or the link above to get started instantly!
 
 ## Inspect / Debug (Recommended)
 
@@ -89,6 +111,8 @@ Quick examples:
 - Streamer information, queue management, and full song library access
 - No authentication required for public endpoints
 - All features fully functional with real StreamerSongList API data
+
+#Please be considerate when using streamersonglists api. It's a shared but limitted resource, be mindful when using LLM's to access it, Please don't ruin it for everyone! 
 
 For detailed API testing results, see [docs/API_TESTING_REPORT.md](./docs/API_TESTING_REPORT.md)
 
@@ -148,4 +172,5 @@ Please open an issue to discuss larger ideas before starting work, and run `npm 
 This project builds on the excellent StreamerSonglist service. All data and API functionality are provided by StreamerSonglist:
 - https://www.streamersonglist.com
 
-This project is community-maintained and not affiliated with or endorsed by StreamerSonglist.
+I am not affiliated with or endorsed by StreamerSonglist so please don't bother them with any issues you find in my code. 
+Thankyou Streamersonglist for providing such a useful service to the streamer community.  Very POG
