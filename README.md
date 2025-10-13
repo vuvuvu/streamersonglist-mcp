@@ -1,5 +1,6 @@
 # StreamerSongList MCP Server
 
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/vuvuvu-streamersonglist-mcp-badge.png)](https://mseep.ai/app/vuvuvu-streamersonglist-mcp)
 [![smithery badge](https://smithery.ai/badge/@vuvuvu/streamersonglist-mcp)](https://smithery.ai/server/@vuvuvu/streamersonglist-mcp)
 [![Test MCP Server](https://github.com/vuvuvu/streamersonglist-mcp/actions/workflows/test.yml/badge.svg)](https://github.com/vuvuvu/streamersonglist-mcp/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)

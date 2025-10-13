@@ -13,6 +13,40 @@ export const configSchema = z.object({
   apiBase: z.string().default("https://api.streamersonglist.com/v1").describe("StreamerSongList API base URL"),
 });
 
+// Zod schemas for tool arguments
+const GetStreamerByNameArgsSchema = z.object({
+  streamerName: z.string().optional(),
+});
+
+const GetQueueArgsSchema = z.object({
+  streamerName: z.string().optional(),
+  limit: z.number().optional().default(50),
+  offset: z.number().optional().default(0),
+});
+
+const MonitorQueueArgsSchema = z.object({
+  streamerName: z.string().optional(),
+  interval: z.number().optional().default(30),
+  duration: z.number().optional().default(300),
+});
+
+const GetSongsArgsSchema = z.object({
+  streamerName: z.string().optional(),
+  limit: z.number().optional().default(100),
+  offset: z.number().optional().default(0),
+});
+
+const SearchSongsArgsSchema = z.object({
+  streamerName: z.string().optional(),
+  query: z.string(),
+  limit: z.number().optional().default(20),
+});
+
+const GetSongDetailsArgsSchema = z.object({
+  streamerName: z.string().optional(),
+  songId: z.number(),
+});
+
 // Required: Export default createServer function
 export default function createServer({ config }: { config?: z.infer<typeof configSchema> }) {
   const server = new Server({
@@ -190,8 +224,9 @@ export default function createServer({ config }: { config?: z.infer<typeof confi
     try {
       switch (name) {
         case "getStreamerByName": {
-          const streamerName = getEffectiveStreamer((args as any)?.streamerName);
-          const data = await makeApiRequest(`/streamers/${encodeURIComponent(streamerName)}`);
+          const { streamerName } = GetStreamerByNameArgsSchema.parse(args ?? {});
+          const effectiveStreamer = getEffectiveStreamer(streamerName);
+          const data = await makeApiRequest(`/streamers/${encodeURIComponent(effectiveStreamer)}`);
           return {
             content: [
               {
@@ -203,10 +238,9 @@ export default function createServer({ config }: { config?: z.infer<typeof confi
         }
 
         case "getQueue": {
-          const streamerName = getEffectiveStreamer((args as any)?.streamerName);
-          const limit = (args as any)?.limit || 50;
-          const offset = (args as any)?.offset || 0;
-          const data = await makeApiRequest(`/streamers/${encodeURIComponent(streamerName)}/queue?limit=${limit}&offset=${offset}`);
+          const { streamerName, limit, offset } = GetQueueArgsSchema.parse(args ?? {});
+          const effectiveStreamer = getEffectiveStreamer(streamerName);
+          const data = await makeApiRequest(`/streamers/${encodeURIComponent(effectiveStreamer)}/queue?limit=${limit}&offset=${offset}`);
           return {
             content: [
               {
@@ -218,24 +252,30 @@ export default function createServer({ config }: { config?: z.infer<typeof confi
         }
 
         case "monitorQueue": {
-          const streamerName = getEffectiveStreamer((args as any)?.streamerName);
-          const interval = ((args as any)?.interval || 30) * 1000; // Convert to milliseconds
-          const duration = ((args as any)?.duration || 300) * 1000; // Convert to milliseconds
+          const { streamerName, interval, duration } = MonitorQueueArgsSchema.parse(args ?? {});
+          const effectiveStreamer = getEffectiveStreamer(streamerName);
+          const intervalMs = interval * 1000; // Convert to milliseconds
+          const durationMs = duration * 1000; // Convert to milliseconds
           
           const startTime = Date.now();
-          const results: any[] = [];
+          const results: Array<{
+            timestamp: string;
+            queueLength?: number;
+            data?: any;
+            error?: string;
+          }> = [];
           
-          while (Date.now() - startTime < duration) {
+          while (Date.now() - startTime < durationMs) {
             try {
-              const data = await makeApiRequest(`/streamers/${encodeURIComponent(streamerName)}/queue`);
+              const data = await makeApiRequest(`/streamers/${encodeURIComponent(effectiveStreamer)}/queue`);
               results.push({
                 timestamp: new Date().toISOString(),
                 queueLength: data.list?.length || 0,
                 data: data,
               });
               
-              if (Date.now() - startTime + interval < duration) {
-                await new Promise(resolve => setTimeout(resolve, interval));
+              if (Date.now() - startTime + intervalMs < durationMs) {
+                await new Promise(resolve => setTimeout(resolve, intervalMs));
               }
             } catch (error: any) {
               results.push({
@@ -257,10 +297,9 @@ export default function createServer({ config }: { config?: z.infer<typeof confi
         }
 
         case "getSongs": {
-          const streamerName = getEffectiveStreamer((args as any)?.streamerName);
-          const limit = (args as any)?.limit || 100;
-          const offset = (args as any)?.offset || 0;
-          const data = await makeApiRequest(`/streamers/${encodeURIComponent(streamerName)}/songs?limit=${limit}&offset=${offset}`);
+          const { streamerName, limit, offset } = GetSongsArgsSchema.parse(args ?? {});
+          const effectiveStreamer = getEffectiveStreamer(streamerName);
+          const data = await makeApiRequest(`/streamers/${encodeURIComponent(effectiveStreamer)}/songs?limit=${limit}&offset=${offset}`);
           return {
             content: [
               {
@@ -272,10 +311,9 @@ export default function createServer({ config }: { config?: z.infer<typeof confi
         }
 
         case "searchSongs": {
-          const streamerName = getEffectiveStreamer((args as any)?.streamerName);
-          const query = (args as any)?.query;
-          const limit = (args as any)?.limit || 20;
-          const data = await makeApiRequest(`/streamers/${encodeURIComponent(streamerName)}/songs?search=${encodeURIComponent(query)}&limit=${limit}`);
+          const { streamerName, query, limit } = SearchSongsArgsSchema.parse(args ?? {});
+          const effectiveStreamer = getEffectiveStreamer(streamerName);
+          const data = await makeApiRequest(`/streamers/${encodeURIComponent(effectiveStreamer)}/songs?search=${encodeURIComponent(query)}&limit=${limit}`);
           return {
             content: [
               {
@@ -287,9 +325,9 @@ export default function createServer({ config }: { config?: z.infer<typeof confi
         }
 
         case "getSongDetails": {
-          const streamerName = getEffectiveStreamer((args as any)?.streamerName);
-          const songId = (args as any)?.songId;
-          const data = await makeApiRequest(`/streamers/${encodeURIComponent(streamerName)}/songs/${songId}`);
+          const { streamerName, songId } = GetSongDetailsArgsSchema.parse(args ?? {});
+          const effectiveStreamer = getEffectiveStreamer(streamerName);
+          const data = await makeApiRequest(`/streamers/${encodeURIComponent(effectiveStreamer)}/songs/${songId}`);
           return {
             content: [
               {
