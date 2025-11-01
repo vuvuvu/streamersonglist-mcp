@@ -16,46 +16,45 @@ const PACKAGE_VERSION = pkg.version || '0.0.0';
 const SDK_DEP_RANGE = (pkg.dependencies && pkg.dependencies['@modelcontextprotocol/sdk']) || '';
 const API_BASE = process.env.SSL_API_BASE || 'https://api.streamersonglist.com/v1';
 
-// Function to find the MCP SDK
+// Function to locate the MCP SDK using Node's resolver (robust in npx environments)
 function findMcpSdk() {
   try {
-    // First try direct import
-    return require('@modelcontextprotocol/sdk');
-  } catch (e) {
-    // Look for the SDK in various locations
-    const possiblePaths = [
-      // Local node_modules
-      path.join(process.cwd(), 'node_modules/@modelcontextprotocol/sdk'),
-      // Parent node_modules (when installed as dependency)
-      path.join(process.cwd(), '../node_modules/@modelcontextprotocol/sdk'),
-      // Global node_modules
-      path.join(process.execPath, '../lib/node_modules/@modelcontextprotocol/sdk')
-    ];
-    
-    for (const basePath of possiblePaths) {
-      try {
-        if (fs.existsSync(path.join(basePath, 'package.json'))) {
-          // Found the SDK, now try to load the components
-          const serverPath = path.join(basePath, 'dist/cjs/server/index.js');
-          const stdioPath = path.join(basePath, 'dist/cjs/server/stdio.js');
-          const typesPath = path.join(basePath, 'dist/cjs/types.js');
-          
-          if (fs.existsSync(serverPath) && fs.existsSync(stdioPath) && fs.existsSync(typesPath)) {
-            return {
-              Server: require(serverPath).Server,
-              StdioServerTransport: require(stdioPath).StdioServerTransport,
-              CallToolRequestSchema: require(typesPath).CallToolRequestSchema,
-              ListToolsRequestSchema: require(typesPath).ListToolsRequestSchema
-            };
-          }
-        }
-      } catch (err) {
-        // Continue to next path
-      }
+    // Resolve the installed SDK's root directory regardless of CWD
+    const sdkPkgPath = require.resolve('@modelcontextprotocol/sdk/package.json');
+    const sdkBase = path.dirname(sdkPkgPath);
+
+    // Prefer CommonJS build for compatibility with this script
+    const serverPath = path.join(sdkBase, 'dist/cjs/server/index.js');
+    const stdioPath = path.join(sdkBase, 'dist/cjs/server/stdio.js');
+    const typesPath = path.join(sdkBase, 'dist/cjs/types.js');
+
+    if (fs.existsSync(serverPath) && fs.existsSync(stdioPath) && fs.existsSync(typesPath)) {
+      return {
+        Server: require(serverPath).Server,
+        StdioServerTransport: require(stdioPath).StdioServerTransport,
+        CallToolRequestSchema: require(typesPath).CallToolRequestSchema,
+        ListToolsRequestSchema: require(typesPath).ListToolsRequestSchema,
+      };
     }
-    
-    // If we get here, we couldn't find the SDK
-    throw new Error('Could not locate @modelcontextprotocol/sdk in any node_modules directory');
+
+    // As a last resort, try the ESM paths via require (may throw in some Node setups)
+    try {
+      const esmServer = require('@modelcontextprotocol/sdk/server/index.js');
+      const esmStdio = require('@modelcontextprotocol/sdk/server/stdio.js');
+      const esmTypes = require('@modelcontextprotocol/sdk/types.js');
+      return {
+        Server: esmServer.Server || esmServer,
+        StdioServerTransport: esmStdio.StdioServerTransport || esmStdio,
+        CallToolRequestSchema: esmTypes.CallToolRequestSchema,
+        ListToolsRequestSchema: esmTypes.ListToolsRequestSchema,
+      };
+    } catch (_) {
+      // ignore and fall through to error below
+    }
+
+    throw new Error('Could not load CommonJS or ESM SDK entrypoints');
+  } catch (err) {
+    throw new Error('Could not locate @modelcontextprotocol/sdk using require.resolve()');
   }
 }
 
@@ -69,7 +68,7 @@ try {
   global.CallToolRequestSchema = sdk.CallToolRequestSchema;
   global.ListToolsRequestSchema = sdk.ListToolsRequestSchema;
 } catch (error) {
-  console.error("Error loading MCP SDK:", error.message);
+  console.error("Error loading MCP SDK:", error && error.message ? error.message : error);
   const sdkHint = SDK_DEP_RANGE || 'latest';
   console.error(`Please install the MCP SDK with: npm install @modelcontextprotocol/sdk@${sdkHint}`);
   console.error(`If the error persists, try installing the package globally: npm install -g @modelcontextprotocol/sdk@${sdkHint}`);
