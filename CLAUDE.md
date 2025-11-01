@@ -17,13 +17,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a **Model Context Protocol (MCP) server** that provides tools for interacting with StreamerSongList APIs. The server integrates with Claude Desktop and other MCP-compatible clients.
 
-Note: This server targets public, read-only endpoints of the StreamerSongList API. All implemented tools use real API responses (no simulated data). See `docs/API_TESTING_REPORT.md` for details.
+Note: This server targets public, read-only endpoints of the StreamerSongList API. `searchSongs` performs client-side filtering over the songs list, and `monitorQueue` returns an initial snapshot with a simulated monitoring description. See `docs/API_TESTING_REPORT.md` for details.
 
 ### Key Dependencies
 - `@modelcontextprotocol/sdk@^1.20.0` - MCP protocol implementation
 
 ### Server Architecture
-- **Single-file implementation**: `src/server.js` (955 lines) contains the entire server
+- **Single-file implementation**: `src/server.js` contains the entire server
 - **Dynamic SDK loading**: Smart resolution with fallback paths for different installation scenarios
 - **Environment configuration**: Supports `DEFAULT_STREAMER` for convenient queue tool usage
 - **MCP Protocol**: Uses stdio transport for communication with Claude Desktop

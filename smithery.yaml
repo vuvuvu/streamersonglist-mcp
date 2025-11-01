@@ -1,2 +1,2 @@
-# Smithery configuration file for TypeScript deployment
+# Smithery configuration file for Node runtime
 runtime: "node"

@@ -90,7 +90,7 @@ function setupClaudeDesktop() {
     console.log('\n🔄 Next steps:');
     console.log('1. Restart Claude Desktop completely');
     console.log('2. Test with: "Use the getStreamerByName tool to get info about a streamer"');
-    console.log('3. Available tools: getStreamerByName, getQueue, getQueueStats, manageSongRequest, monitorQueue');
+    console.log('3. Available tools: getStreamerByName, getQueue, getSongs, searchSongs, getSongDetails, monitorQueue');
     
   } catch (error) {
     console.log('❌ Error writing config:', error.message);
