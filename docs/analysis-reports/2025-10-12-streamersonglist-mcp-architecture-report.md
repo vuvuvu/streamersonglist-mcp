@@ -12,15 +12,21 @@ tool_version: "claude-4-sonnet@2025-10-12"
 
 # StreamerSongList MCP — Code-First Architecture Report
 
+> Maintenance note (2025-11-01): This report is a historical snapshot. The codebase has since been streamlined. Key corrections:
+> - Dependencies: removed `undici`; Node 18+ native `fetch` is used.
+> - Docker: a Dockerfile exists and now copies only `src/` for a smaller image.
+> - Tools (6 total): `searchSongs` uses client-side filtering; `getSongDetails` calls the direct endpoint; `monitorQueue` returns an initial snapshot and describes a simulated monitoring flow.
+> - Smithery config: runtime set to `node` (not TypeScript).
+
 ## 1. What the Code Says This Is
 
 **Purpose**: A Model Context Protocol (MCP) server that exposes read-only StreamerSongList API functionality through 6 standardized tools, enabling AI assistants to access streamer information, song queues, and music catalogs without authentication. The server implements dynamic MCP SDK loading, optional default streamer configuration, and comprehensive error handling for external API interactions.
 
 **Top Signals**:
-- **Languages**: JavaScript 100% (780 LoC excluding node_modules)
-- **Files**: 19 project files (excluding dependencies)
-- **Primary Framework**: @modelcontextprotocol/sdk (project now depends on ^1.20.0)
-- **Runtime**: Node.js ≥18.0.0
+- **Languages**: JavaScript (single-file server)
+- **Files**: Minimal project files (excluding dependencies)
+- **Primary Framework**: @modelcontextprotocol/sdk (^1.20.0)
+- **Runtime**: Node.js ≥18.0.0 (uses native fetch)
 
 **Evidence**:
 - `src/server.js:1-558` - Single-file MCP server implementation
@@ -28,7 +34,7 @@ tool_version: "claude-4-sonnet@2025-10-12"
 - `package.json:15-17` - Dependencies: @modelcontextprotocol/sdk, undici
 - `package-lock.json:6` - Node.js version requirement ">=18.0.0"
 
-> Note: This report is a snapshot from 2025-10-12. Current package versions: `@modelcontextprotocol/sdk@^1.20.0`, `undici@^7.16.0`. API base is configurable via `SSL_API_BASE` (default `https://api.streamersonglist.com/v1`).
+> Note: This report is a snapshot from 2025-10-12. Current package versions: `@modelcontextprotocol/sdk@^1.20.0`. API base is configurable via `SSL_API_BASE` (default `https://api.streamersonglist.com/v1`).
 
 ## 2. Architecture at a Glance
 
@@ -70,7 +76,7 @@ graph TD
 ```mermaid
 graph LR
     Server[src/server.js] --> SDK[@modelcontextprotocol/sdk]
-    Server --> Undici[undici - HTTP client]
+    Server --> NodeFetch[native fetch (Node 18+)]
     Server --> NodeFS[Node.js fs]
     Server --> NodePath[Node.js path]
     
@@ -240,7 +246,7 @@ npm test  # Runs test-server.js - MCP protocol validation
 **Evidence**: `test-server.js:1-50` - Spawns server, sends tools/list request
 
 ### Docker/Containerization
-- **None present** - No Dockerfile or container configuration found
+- **Dockerfile present** - Uses Node LTS Alpine; installs production deps via `npm ci --omit=dev`; copies only `src/`
 
 ### CI/CD Pipeline
 **GitHub Actions** (`.github/workflows/test.yml`):
@@ -259,7 +265,7 @@ npm test  # Runs test-server.js - MCP protocol validation
 
 ### Code Quality Tools
 - **Linting**: None detected (no ESLint, Prettier configs)
-- **Type Checking**: None (no TypeScript, JSDoc types)
+- **Type Checking**: None (JSDoc or TS not currently used)
 - **Formatting**: No automated formatting rules
 
 ### Security Considerations
@@ -276,29 +282,20 @@ npm test  # Runs test-server.js - MCP protocol validation
 - **Input Sanitization**: Limited validation beyond MCP schema
 
 #### 🔍 High-Risk Dependencies
-- `undici@7.11.0` - HTTP client (check for CVEs)
-- `express@4.x` (via MCP SDK) - Web framework vulnerabilities
+- `express@4.x` (possibly transitive via MCP SDK) - review SDK advisory notes
 
 ## 10. Contradictions & Unknowns
 
 ### Documentation vs Code Mismatches
 
-1. **Tool Count Discrepancy**
-   - **README.md**: Claims 6 tools
-   - **Code Reality**: Exactly 6 tools implemented (`src/server.js:120-229`)
-   - **Status**: ✅ Consistent
+1. **Tool Count**
+   - 6 tools implemented (consistent across code and README)
 
-2. **API Functionality Claims**
-   - **README.md**: "real API data without authentication"
-   - **Code Reality**: Only 4/6 tools use real API; 2 use client-side processing
-   - **Evidence**: `docs/API_TESTING_REPORT.md:130-145` - searchSongs uses client filtering
-   - **Status**: ⚠️ Misleading
+2. **API Functionality**
+   - All tools use public endpoints; `searchSongs` does client-side filtering for convenience.
 
-3. **Tool Descriptions**
-   - **README.md**: "monitorQueue" described as real-time
-   - **Code Reality**: Returns static queue snapshot with simulation description
-   - **Evidence**: `src/server.js:340-375` - No actual monitoring implementation
-   - **Status**: ❌ Incorrect
+3. **Monitoring Semantics**
+   - `monitorQueue` returns an initial snapshot and a descriptive simulation message; not a continuous stream.
 
 ### Open Questions
 
@@ -317,8 +314,7 @@ npm test  # Runs test-server.js - MCP protocol validation
 ### Full Dependency List (Top-Level)
 ```json
 {
-  "@modelcontextprotocol/sdk": "1.13.3",
-  "undici": "7.11.0"
+  "@modelcontextprotocol/sdk": "^1.20.0"
 }
 ```
 

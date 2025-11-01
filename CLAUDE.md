@@ -21,7 +21,6 @@ Note: This server targets public, read-only endpoints of the StreamerSongList AP
 
 ### Key Dependencies
 - `@modelcontextprotocol/sdk@^1.20.0` - MCP protocol implementation
-- `undici@^7.16.0` - Modern fetch API implementation for Node.js
 
 ### Server Architecture
 - **Single-file implementation**: `src/server.js` (955 lines) contains the entire server
@@ -34,7 +33,7 @@ Note: This server targets public, read-only endpoints of the StreamerSongList AP
 - `getQueue` — GET `/v1/streamers/{name}/queue`
 - `getSongs` — GET `/v1/streamers/{name}/songs`
 - `searchSongs` — Client-side filtering over `getSongs`
-- `getSongDetails` — Client-side selection from `getSongs`
+- `getSongDetails` — Uses direct endpoint `/v1/streamers/{name}/songs/{songId}`
 - `monitorQueue` — Polls `getQueue` at intervals
 
 ### Environment Variable Support

@@ -1,5 +1,7 @@
 # StreamerSongList API Testing Report
 
+> Update (2025-11-01): This report’s API findings remain useful, but the MCP server implementation has been streamlined. The server exposes 6 tools total, all using public read-only endpoints; `searchSongs` performs client-side filtering and `monitorQueue` returns an initial snapshot with a simulated description of monitoring. `getSongDetails` now calls the direct endpoint (`/streamers/{name}/songs/{songId}`).
+
 **Date**: October 12, 2025
 **Test Streamer**: vu_vu (ID: 21108)
 **API Base URL**: https://api.streamersonglist.com/v1/
@@ -120,26 +122,21 @@ The following endpoints are documented but return **404 Not Found**:
 ## MCP Server Impact Assessment
 
 ### Current Implementation Status
-The existing MCP server (`src/server.js`) contains 11 tools, but only 4 have real API support:
+The MCP server (`src/server.js`) contains 6 tools, all using public read-only endpoints:
 
-1. **`getStreamerByName`** ✅ - Fully functional
-2. **`getQueue`** ✅ - Fully functional
-3. **`getQueueStats`** ❌ - Not implemented by this server; upstream endpoint returns 404
-4. **`manageSongRequest`** ❌ - Returns simulated data
-5. **`monitorQueue`** ✅ - Works with real queue data
-6. **`getPlayHistory`** ❌ - Returns simulated data
-7. **`searchSongs`** ❌ - Returns simulated data
-8. **`getSongDetails`** ✅ - Fully functional
-9. **`manageSongAttributes`** ❌ - Returns simulated data
-10. **`getOverlayData`** ❌ - Returns simulated data
-11. **`getStreamStats`** ❌ - Returns simulated data
+1. `getStreamerByName` — GET `/v1/streamers/{name}` (fully functional)
+2. `getQueue` — GET `/v1/streamers/{name}/queue` (fully functional)
+3. `getSongs` — GET `/v1/streamers/{name}/songs` (fully functional)
+4. `searchSongs` — Client-side filtering over fetched songs (uses real data from songs endpoint)
+5. `getSongDetails` — GET `/v1/streamers/{name}/songs/{songId}` (direct endpoint)
+6. `monitorQueue` — Returns initial snapshot and describes a simulated monitoring flow
 
 ### Recommendations
 
 #### Immediate Actions
-1. **Update Documentation**: Correct README.md to reflect actual API capabilities
-2. **Enhance Working Tools**: Improve the 4 functional tools with additional parameters and features
-3. **Client-Side Features**: Implement search and filtering using the songs endpoint data
+1. **Documentation clarity**: Clearly denote that `searchSongs` uses client-side filtering and `monitorQueue` is a snapshot + simulation.
+2. **Enhance tools**: Add optional params (filters, limits) and stronger error messages.
+3. **Optional**: Implement real polling/streaming if upstream supports it; add basic rate-limit backoff.
 
 #### Future Enhancements
 1. **Authentication Integration**: Implement API key or OAuth authentication when available

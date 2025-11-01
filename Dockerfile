@@ -4,15 +4,15 @@ FROM node:lts-alpine
 # Create app directory
 WORKDIR /app
 
-# Install app dependencies
+# Install production dependencies deterministically
 COPY package.json package-lock.json ./
-RUN npm install --production
+RUN npm ci --omit=dev
 
-# Bundle app source
-COPY . .
+# Bundle app source only
+COPY src ./src
 
-# Expose port if needed (not used for stdio)
-# RUN chmod +x src/server.js
+# Ensure executable bit (optional for shebang)
+RUN chmod +x src/server.js || true
 
 # Start the server
 CMD ["node", "src/server.js"]

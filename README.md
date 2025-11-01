@@ -78,9 +78,13 @@ printf '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}\n' | node src
 - **getStreamerByName** — Fetch comprehensive streamer configuration
 - **getQueue** — List current song queue with pagination
 - **getSongs** — Fetch complete song list with pagination
-- **searchSongs** — Search songs by title or artist
-- **getSongDetails** — Get detailed information about a specific song
+- **searchSongs** — Search songs by title or artist (local filtering over song list)
+- **getSongDetails** — Get detailed information about a specific song (direct song endpoint)
 - **monitorQueue** — Monitor queue changes using real data
+
+Implementation notes:
+- `searchSongs` performs client-side filtering over the fetched songs list for simplicity.
+- `getSongDetails` now uses the direct endpoint `/streamers/{name}/songs/{songId}` for efficiency.
 
 ### Usage Examples
 

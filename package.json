@@ -12,6 +12,7 @@
   "scripts": {
     "start": "node src/server.js",
     "test": "node test-server.js",
+    "test:integration": "node test-integration.js",
     "setup": "node setup-claude.js"
   },
   "keywords": [
@@ -27,8 +28,7 @@
   "author": "vuvuvu",
   "license": "MIT",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.20.0",
-    "undici": "^7.16.0"
+    "@modelcontextprotocol/sdk": "^1.20.0"
   },
   "engines": {
     "node": ">=18.0.0"

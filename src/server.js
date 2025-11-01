@@ -358,7 +358,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           const updates = [];
           
           // Initial queue fetch
-          const initialResponse = await fetch(`https://api.streamersonglist.com/v1/streamers/${encodeURIComponent(streamerName)}/queue`);
+          const initialResponse = await fetch(`${API_BASE}/streamers/${encodeURIComponent(streamerName)}/queue`);
           if (initialResponse.ok) {
             const initialQueue = await initialResponse.json();
             updates.push({
@@ -499,30 +499,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         }
 
         try {
-          // Get all songs and find the specific one
-          const response = await fetch(`${API_BASE}/streamers/${encodeURIComponent(streamerName)}/songs`);
+          // Fetch specific song by ID directly (more efficient)
+          const response = await fetch(`${API_BASE}/streamers/${encodeURIComponent(streamerName)}/songs/${songId}`);
 
           if (!response.ok) {
             return {
               content: [{
                 type: "text",
-                text: `Error fetching songs: ${response.status} ${response.statusText}`
+                text: `Error fetching song details: ${response.status} ${response.statusText}`
               }]
             };
           }
 
-          const songsData = await response.json();
-          const allSongs = songsData.items || songsData; // Handle different response formats
-          const song = allSongs.find(s => s.id === songId);
-
-          if (!song) {
-            return {
-              content: [{
-                type: "text",
-                text: `Song with ID ${songId} not found for streamer ${streamerName}`
-              }]
-            };
-          }
+          const song = await response.json();
 
           return {
             content: [{
