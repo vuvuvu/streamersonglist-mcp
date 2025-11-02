@@ -1,65 +1,45 @@
-# StreamerSongList MCP Server (Node-Minimal)
+# StreamerSongList MCP Server (Node‑Minimal)
 
-Local-optimized, Node-only MCP server exposing read-only StreamerSongList tools. No TypeScript build, no extra docs — just run it.
+ MCP server exposing 6 read‑only StreamerSongList tools. Uses the StreamerSongList API. 
 
-## Requirements
-- Node.js 18+ (uses native `fetch`)
-
-## Quick Start
-
-1) Install deps
-```bash
-npm install
-```
-
-2) Run the server on stdio
-```bash
-npm start
-# or
-node src/server.js
-```
-
-3) Optional: set a default streamer
-```bash
-# environment variable
-DEFAULT_STREAMER=belleune npm start
-
-# CLI flag
-node src/server.js --streamer belleune
-```
-
-4) Inspect with MCP Inspector (recommended)
-```bash
-npx @modelcontextprotocol/inspector@latest -- node src/server.js
-```
-
-5) Quick JSON-RPC smoke test
-```bash
-printf '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}\n' | node src/server.js
-```
-
-## Tools (6)
+## Tools
 - getStreamerByName — fetch streamer configuration
 - getQueue — current song queue (pagination)
 - getSongs — full song list (pagination)
-- searchSongs — client-side filter over song list
-- getSongDetails — direct endpoint by songId
+- searchSongs — client‑side filter over the song list
+- getSongDetails — direct endpoint by `songId`
 - monitorQueue — initial snapshot + simulated description
 
-## Configuration
-- `DEFAULT_STREAMER` — default when `streamerName` omitted
-- `SSL_API_BASE` — override API base (default `https://api.streamersonglist.com/v1`)
+## Quick Start
+```npx streamersonglist-mcp -s <streamerName>
+```
+the -s flag sets the default streamer name to use when none is specified in requests.
+- Use with MCP Inspector to test and inspect:
+  ```npx @modelcontextprotocol/inspector@latest``` 
+Alternative (local clone):
+- npm install && npm start
+- Or: node src/server.js -s belleune
 
-## Scripts
-- `npm install` — install dependencies
-- `npm start` — start the MCP server
-- `npm test` — protocol smoke test
-- `npm run test:integration` — end-to-end test (real API)
+## Configuration & Scripts
+- Configuration
+  - `DEFAULT_STREAMER` — optional default when `streamerName` is omitted
+- Scripts
+  - `npm install` — install dependencies
+  - `npm start` — start the MCP server on stdio
+  - `npm test` — protocol smoke test
+  - `npm run test:integration` - end-to-end test
 
 ## Notes
-- This branch removes non-essential artifacts (docs, TS build) to keep local usage lean.
-- Use public streamer names only; endpoints are public read-only.
+- Release 1.4.0
+  - Robust npx support: resolve MCP SDK via `require.resolve` for reliable installs
+  - getSongDetails uses the direct endpoint (`/songs/{songId}`)
+  - monitorQueue respects the configured API base
+  - Removed undici; rely on Node 18+ native `fetch`
+  - Slimmed docs to keep this branch lean; added integration test
+- Not associated with streamersonglist.com — thanks to StreamerSongList for their public API service.
 
 ## License
 MIT — see `LICENSE`.
 
+## Source Code
+https://github.com/vuvuvu/streamersonglist-mcp
